@@ -3,8 +3,6 @@ A sequel to [Tux Planet 1](https://github.com/dtsudo/Tux-Planet-Speedrun-Any-Per
 
 This game is a shmup where Konqi flies around and defeats various opponents!
 
-Play the game here: https://dtsudo.itch.io/tux-planet-2?password=plasma
-
 ## Build instructions
 
 The game is written in Typescript; install Typescript and run it to generate the corresponding javascript files.
