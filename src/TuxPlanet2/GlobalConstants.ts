@@ -1,7 +1,0 @@
-
-let GlobalConstants = {
-	FILE_ID_FOR_SOUND_AND_MUSIC_VOLUME: 1,
-
-	WINDOW_WIDTH: 1000,
-	WINDOW_HEIGHT: 700
-};
