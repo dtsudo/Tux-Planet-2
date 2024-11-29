@@ -25,11 +25,22 @@ let Game = ((function () {
     };
     let fpsFrameCounter = 0;
     let startTimeMillis = Date.now();
+    let fpsPerformanceTracking = [];
     let displayFps = function () {
         let currentTimeMillis = Date.now();
         if (currentTimeMillis - startTimeMillis > 2000) {
             let actualFps = fpsFrameCounter / 2;
-            fpsNode.textContent = actualFps.toString();
+            if (fpsPerformanceTracking.length > 0) {
+                let maxTimeToRenderFrame = fpsPerformanceTracking[0];
+                for (let timeElapsed of fpsPerformanceTracking) {
+                    if (timeElapsed > maxTimeToRenderFrame)
+                        maxTimeToRenderFrame = timeElapsed;
+                }
+                fpsNode.textContent = actualFps.toString() + " (time to process/render slowest frame: " + maxTimeToRenderFrame.toString() + " ms)";
+            }
+            else {
+                fpsNode.textContent = actualFps.toString();
+            }
             fpsFrameCounter = 0;
             startTimeMillis = currentTimeMillis;
         }
@@ -67,7 +78,13 @@ let Game = ((function () {
             if (nextTimeToAct < now - 5.0 * (1000.0 / fps))
                 nextTimeToAct = now - 5.0 * (1000.0 / fps);
             nextTimeToAct = nextTimeToAct + (1000.0 / fps);
+            let startTimer = Date.now();
             GameInitializer.computeAndRenderNextFrame(canvasNode);
+            let endTimer = Date.now();
+            let timeElapsedThisFrame = endTimer - startTimer;
+            fpsPerformanceTracking.push(timeElapsedThisFrame);
+            if (fpsPerformanceTracking.length > 300)
+                fpsPerformanceTracking.shift();
             fpsFrameCounter++;
             if (showFps)
                 displayFps();

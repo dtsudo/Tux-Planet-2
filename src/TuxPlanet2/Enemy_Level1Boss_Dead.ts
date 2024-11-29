@@ -12,28 +12,32 @@ let Enemy_Level1Boss_Dead: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameCou
 			deadFrameCount: number,
 			enemyId: number): IEnemy {
 
-		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput }) {
+		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput, tilemap }) {
 
 			let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
 
 			xMibi += xSpeed;
 			yMibi += ySpeed;
 
-			if (-30 < ySpeed && ySpeed < 30)
+			if (-8 < ySpeed && ySpeed < 8)
 				ySpeed = 0;
 
 			if (ySpeed < 0)
-				ySpeed += 30;
+				ySpeed += 8;
 
 			if (ySpeed > 0)
-				ySpeed -= 30;
+				ySpeed -= 8;
+
+			let handleCollisionWithTilemapResult = Enemy_Level1Boss_Phase1.handleCollisionWithTilemap({ xMibi, yMibi, ySpeed, tilemap });
+			yMibi = handleCollisionWithTilemapResult.newYMibi;
+			ySpeed = handleCollisionWithTilemapResult.newYSpeed;
 
 			let enemies = [thisObj];
 
 			frameCounter++;
 			deadFrameCount++;
 
-			if (deadFrameCount % 4 === 0) {
+			if (deadFrameCount % 8 === 0) {
 				let explodeXMibi = xMibi;
 				let explodeYMibi = yMibi;
 
@@ -61,7 +65,7 @@ let Enemy_Level1Boss_Dead: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameCou
 			if (deadFrameCount === 1)
 				returnVal.shouldScreenWipe = true;
 
-			if (deadFrameCount > GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 90 && playerState.isDeadFrameCount === null)
+			if (deadFrameCount > GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 180 && playerState.isDeadFrameCount === null)
 				returnVal.shouldEndLevel = true;
 
 			return returnVal;
@@ -82,7 +86,7 @@ let Enemy_Level1Boss_Dead: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameCou
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
-			let spriteNum = Math.floor(frameCounter / 10) % 4;
+			let spriteNum = Math.floor(frameCounter / 20) % 4;
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.OwlBrown,

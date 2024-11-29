@@ -2,30 +2,33 @@ let Enemy_Level1Boss_Phase3 = {};
 ((function () {
     const INITIAL_HP = 500;
     let getEnemy = function (xMibi, yMibi, xSpeed, ySpeed, frameCounter, attackCooldown, hp, enemyId) {
-        let processFrame = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput }) {
+        let processFrame = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput, tilemap }) {
             let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
             xMibi += xSpeed;
             yMibi += ySpeed;
             if (playerState.yMibi - yMibi >= 1024 * 20) {
-                if (ySpeed < 1000)
-                    ySpeed += 30;
+                if (ySpeed < 500)
+                    ySpeed += 8;
             }
             if (playerState.yMibi - yMibi <= -1024 * 20) {
-                if (ySpeed > -1000)
-                    ySpeed -= 30;
+                if (ySpeed > -500)
+                    ySpeed -= 8;
             }
+            let handleCollisionWithTilemapResult = Enemy_Level1Boss_Phase1.handleCollisionWithTilemap({ xMibi, yMibi, ySpeed, tilemap });
+            yMibi = handleCollisionWithTilemapResult.newYMibi;
+            ySpeed = handleCollisionWithTilemapResult.newYSpeed;
             frameCounter++;
             let enemies = [thisObj];
             let ATTACK_COOLDOWN;
             switch (difficulty) {
                 case 0 /* Difficulty.Easy */:
-                    ATTACK_COOLDOWN = 50;
+                    ATTACK_COOLDOWN = 100;
                     break;
                 case 1 /* Difficulty.Normal */:
-                    ATTACK_COOLDOWN = 22;
+                    ATTACK_COOLDOWN = 44;
                     break;
                 case 2 /* Difficulty.Hard */:
-                    ATTACK_COOLDOWN = 4;
+                    ATTACK_COOLDOWN = 8;
                     break;
             }
             attackCooldown--;
@@ -75,8 +78,8 @@ let Enemy_Level1Boss_Phase3 = {};
             return [damagebox];
         };
         let render = function (displayOutput) {
-            let spriteNum = Math.floor(frameCounter / 10) % 4;
-            displayOutput.drawImageRotatedClockwise(18 /* GameImage.OwlBrown */, 32 + spriteNum * 32, 0, 32, 32, (xMibi >> 10) - 16 * 3, (yMibi >> 10) - 16 * 3, 0, 128 * 3);
+            let spriteNum = Math.floor(frameCounter / 20) % 4;
+            displayOutput.drawImageRotatedClockwise(20 /* GameImage.OwlBrown */, 32 + spriteNum * 32, 0, 32, 32, (xMibi >> 10) - 16 * 3, (yMibi >> 10) - 16 * 3, 0, 128 * 3);
         };
         let getSnapshot = function (thisObj) {
             return getEnemy(xMibi, yMibi, xSpeed, ySpeed, frameCounter, attackCooldown, hp, enemyId);

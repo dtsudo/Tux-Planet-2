@@ -15,7 +15,7 @@ let Enemy_Level1Boss_Phase3: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 			hp: number,
 			enemyId: number): IEnemy {
 
-		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput }) {
+		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput, tilemap }) {
 
 			let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
 
@@ -23,14 +23,18 @@ let Enemy_Level1Boss_Phase3: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 			yMibi += ySpeed;
 
 			if (playerState.yMibi - yMibi >= 1024 * 20) {
-				if (ySpeed < 1000)
-					ySpeed += 30;
+				if (ySpeed < 500)
+					ySpeed += 8;
 			}
 
 			if (playerState.yMibi - yMibi <= -1024 * 20) {
-				if (ySpeed > -1000)
-					ySpeed -= 30;
+				if (ySpeed > -500)
+					ySpeed -= 8;
 			}
+
+			let handleCollisionWithTilemapResult = Enemy_Level1Boss_Phase1.handleCollisionWithTilemap({ xMibi, yMibi, ySpeed, tilemap });
+			yMibi = handleCollisionWithTilemapResult.newYMibi;
+			ySpeed = handleCollisionWithTilemapResult.newYSpeed;
 
 			frameCounter++;
 
@@ -39,9 +43,9 @@ let Enemy_Level1Boss_Phase3: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 			let ATTACK_COOLDOWN: number;
 
 			switch (difficulty) {
-				case Difficulty.Easy: ATTACK_COOLDOWN = 50; break;
-				case Difficulty.Normal: ATTACK_COOLDOWN = 22; break;
-				case Difficulty.Hard: ATTACK_COOLDOWN = 4; break;
+				case Difficulty.Easy: ATTACK_COOLDOWN = 100; break;
+				case Difficulty.Normal: ATTACK_COOLDOWN = 44; break;
+				case Difficulty.Hard: ATTACK_COOLDOWN = 8; break;
 			}
 
 			attackCooldown--;
@@ -98,7 +102,7 @@ let Enemy_Level1Boss_Phase3: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
-			let spriteNum = Math.floor(frameCounter / 10) % 4;
+			let spriteNum = Math.floor(frameCounter / 20) % 4;
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.OwlBrown,

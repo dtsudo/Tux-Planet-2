@@ -4,6 +4,8 @@ let CreditsFrame_Images = {
             + "* Kelvin Shadewing \n"
             + "* Kenney \n"
             + "* KnoblePersona \n"
+            + "* Lanea Zimmerman, William Thompson \n"
+            + "* Nemisys \n"
             + "\n"
             + "See the source code for more information (including licensing \n"
             + "details).";

@@ -6,6 +6,8 @@ let CreditsFrame_DesignAndCoding = {
             case 1 /* BuildType.WebEmbedded */:
                 text = "Design and coding by dtsudo. \n"
                     + "\n"
+                    + "Level layout was adapted from SuperTux Advance maps. \n"
+                    + "\n"
                     + "This game is a fangame of SuperTux and SuperTux Advance. \n"
                     + "\n"
                     + "This game is open source, licensed under GPL 3.0. \n"
@@ -17,6 +19,8 @@ let CreditsFrame_DesignAndCoding = {
                 break;
             case 2 /* BuildType.Electron */:
                 text = "Design and coding by dtsudo. \n"
+                    + "\n"
+                    + "Level layout was adapted from SuperTux Advance maps. \n"
                     + "\n"
                     + "This game is a fangame of SuperTux and SuperTux Advance. \n"
                     + "\n"

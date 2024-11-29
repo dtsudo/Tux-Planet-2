@@ -1,5 +1,5 @@
 
-let Enemy_Bullet_Iceball: { getEnemy: ({ xMibi, yMibi, speed, angleScaled, enemyId }: { xMibi: number, yMibi: number, speed: number, angleScaled: number, enemyId: number }) => IEnemy } = {} as any;
+let Enemy_Bullet_Iceball: { getEnemy: ({ xMibi, yMibi, speed, angleScaled, xVelocityOffsetInMibipixelsPerFrame, hasCollisionWithTilemap, gameImage, enemyId }: { xMibi: number, yMibi: number, speed: number, angleScaled: number, xVelocityOffsetInMibipixelsPerFrame: number, hasCollisionWithTilemap: boolean, gameImage: GameImage, enemyId: number }) => IEnemy } = {} as any;
 
 ((function () {
 	let getEnemy = function (
@@ -9,11 +9,14 @@ let Enemy_Bullet_Iceball: { getEnemy: ({ xMibi, yMibi, speed, angleScaled, enemy
 		ySpeed: number,
 		displayAngleScaled: number,
 		screenWipeCountdown: number | null,
+		hasCollisionWithTilemap: boolean,
+		collisionWithTilemapCountdown: number | null,
+		gameImage: GameImage,
 		enemyId: number): IEnemy {
 
 		let thisEnemyArray: IEnemy[] | null = null;
 
-		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, playerState, soundOutput }) {
+		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, playerState, soundOutput, tilemap }) {
 
 			xMibi += xSpeed;
 			yMibi += ySpeed;
@@ -41,6 +44,21 @@ let Enemy_Bullet_Iceball: { getEnemy: ({ xMibi, yMibi, speed, angleScaled, enemy
 				}
 			}
 
+			if (hasCollisionWithTilemap && collisionWithTilemapCountdown === null && tilemap.isSolid(xMibi, yMibi)) {
+				collisionWithTilemapCountdown = 5;
+			}
+
+			if (collisionWithTilemapCountdown !== null)
+				collisionWithTilemapCountdown--;
+
+			if (collisionWithTilemapCountdown === 0 || collisionWithTilemapCountdown !== null && !tilemap.isSolid(xMibi, yMibi)) {
+				return {
+					enemies: [],
+					nextEnemyId: nextEnemyId,
+					newRngSeed: rngSeed
+				};
+			}
+
 			if (thisEnemyArray === null)
 				thisEnemyArray = [thisObj];
 
@@ -53,10 +71,10 @@ let Enemy_Bullet_Iceball: { getEnemy: ({ xMibi, yMibi, speed, angleScaled, enemy
 
 		let getHitboxes = function () {
 			let hitbox: Hitbox = {
-				xMibi: xMibi - 6 * 1024,
-				yMibi: yMibi - 6 * 1024,
-				widthMibi: 13 * 1024,
-				heightMibi: 13 * 1024
+				xMibi: xMibi - 8 * 1024,
+				yMibi: yMibi - 8 * 1024,
+				widthMibi: 17 * 1024,
+				heightMibi: 17 * 1024
 			};
 
 			return [hitbox];
@@ -67,12 +85,12 @@ let Enemy_Bullet_Iceball: { getEnemy: ({ xMibi, yMibi, speed, angleScaled, enemy
 		};
 
 		let getSnapshot = function (thisObj: IEnemy) {
-			return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, screenWipeCountdown, enemyId);
+			return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, screenWipeCountdown, hasCollisionWithTilemap, collisionWithTilemapCountdown, gameImage, enemyId);
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
 			displayOutput.drawImageRotatedClockwise(
-				GameImage.Iceball,
+				gameImage,
 				0,
 				0,
 				6,
@@ -102,13 +120,13 @@ let Enemy_Bullet_Iceball: { getEnemy: ({ xMibi, yMibi, speed, angleScaled, enemy
 		};
 	};
 
-	Enemy_Bullet_Iceball.getEnemy = function ({ xMibi, yMibi, speed, angleScaled, enemyId }: { xMibi: number, yMibi: number, speed: number, angleScaled: number, enemyId: number }): IEnemy {
+	Enemy_Bullet_Iceball.getEnemy = function ({ xMibi, yMibi, speed, angleScaled, xVelocityOffsetInMibipixelsPerFrame, hasCollisionWithTilemap, gameImage, enemyId }: { xMibi: number, yMibi: number, speed: number, angleScaled: number, xVelocityOffsetInMibipixelsPerFrame: number, hasCollisionWithTilemap: boolean, gameImage: GameImage, enemyId: number }): IEnemy {
 
-		let xSpeed: number = (speed * DTMath.cosineScaled(angleScaled)) >> 10;
+		let xSpeed: number = ((speed * DTMath.cosineScaled(angleScaled)) >> 10) + xVelocityOffsetInMibipixelsPerFrame;
 		let ySpeed: number = (speed * DTMath.sineScaled(angleScaled)) >> 10;
 
 		let displayAngleScaled = -angleScaled - 90 * 128;
 
-		return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, null, enemyId);
+		return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, null, hasCollisionWithTilemap, null, gameImage, enemyId);
 	};
 })());

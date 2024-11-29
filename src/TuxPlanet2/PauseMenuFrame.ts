@@ -50,7 +50,7 @@ PauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState: Sess
 
 			switch (option) {
 				case 1: return underlyingFrame;
-				case 2: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(1, difficulty));
+				case 2: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(Level.Level1, difficulty, displayProcessing));
 				case 3: return TitleScreenFrame.getFrame(globalState, sessionState);
 				default: throw new Error("Unrecognized option");
 			}

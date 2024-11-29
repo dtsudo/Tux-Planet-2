@@ -1,6 +1,6 @@
 let ReplayFrame = {};
-ReplayFrame.getFrame = function (globalState, sessionState, frameInputHistory, difficulty) {
-    let gameState = GameStateUtil.getInitialGameState(1, difficulty);
+ReplayFrame.getFrame = function (globalState, sessionState, frameInputHistory, difficulty, displayProcessing) {
+    let gameState = GameStateUtil.getInitialGameState(0 /* Level.Level1 */, difficulty, displayProcessing);
     let savedGameState = null;
     let skipFrameCount = 0;
     let frameInputs = {};
@@ -18,10 +18,12 @@ ReplayFrame.getFrame = function (globalState, sessionState, frameInputHistory, d
         if (keyboardInput.isPressed(45 /* Key.Esc */) && !previousKeyboardInput.isPressed(45 /* Key.Esc */))
             return ReplayPauseMenuFrame.getFrame(globalState, sessionState, thisFrame, gameState.difficulty, frameInputHistory);
         let frame = getNextFrameHelper({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame });
+        if (!keyboardInput.isPressed(43 /* Key.Shift */))
+            frame = getNextFrameHelper({ keyboardInput, mouseInput, previousKeyboardInput: keyboardInput, previousMouseInput: mouseInput, displayProcessing, soundOutput, musicOutput, thisFrame });
         if (keyboardInput.isPressed(25 /* Key.Z */) && !keyboardInput.isPressed(43 /* Key.Shift */)) {
             let emptyKeyboard = EmptyKeyboard.getEmptyKeyboard();
             let emptyMouse = EmptyMouse.getEmptyMouse();
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < 8; i++) {
                 frame = getNextFrameHelper({ keyboardInput: emptyKeyboard, mouseInput: emptyMouse, previousKeyboardInput: emptyKeyboard, previousMouseInput: emptyMouse, displayProcessing, soundOutput, musicOutput, thisFrame });
             }
         }
@@ -35,7 +37,7 @@ ReplayFrame.getFrame = function (globalState, sessionState, frameInputHistory, d
         let shouldExecuteFrame = true;
         if (keyboardInput.isPressed(43 /* Key.Shift */)) {
             skipFrameCount++;
-            if (skipFrameCount === 5) {
+            if (skipFrameCount === 2) {
                 skipFrameCount = 0;
                 shouldExecuteFrame = true;
             }
@@ -52,7 +54,8 @@ ReplayFrame.getFrame = function (globalState, sessionState, frameInputHistory, d
                     left: false,
                     right: false,
                     shoot: false,
-                    continueDialogue: false
+                    continueDialogue: false,
+                    debug_toggleInvulnerability: false
                 };
             let result = GameStateProcessing.processFrame(gameState, frameInput, soundOutput, musicOutput);
             if (result.shouldEndLevel && endLevelCounter === null)

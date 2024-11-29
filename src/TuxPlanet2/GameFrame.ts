@@ -37,6 +37,9 @@ GameFrame.getFrame = function (globalState: GlobalState, sessionState: SessionSt
 
 		let frame = getNextFrameHelper({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame });
 
+		if (!keyboardInput.isPressed(Key.Shift))
+			frame = getNextFrameHelper({ keyboardInput, mouseInput, previousKeyboardInput: keyboardInput, previousMouseInput: mouseInput, displayProcessing, soundOutput, musicOutput, thisFrame });
+
 		if (globalState.debugMode) {
 			if (keyboardInput.isPressed(Key.Zero) && !previousKeyboardInput.isPressed(Key.Zero) && endLevelCounter === null)
 				endLevelCounter = 0;
@@ -48,7 +51,7 @@ GameFrame.getFrame = function (globalState: GlobalState, sessionState: SessionSt
 		if (globalState.debugMode && keyboardInput.isPressed(Key.One)) {
 			let emptyKeyboard = EmptyKeyboard.getEmptyKeyboard();
 			let emptyMouse = EmptyMouse.getEmptyMouse();
-			for (let i = 0; i < 4; i++) 
+			for (let i = 0; i < 20; i++) 
 				frame = getNextFrameHelper({ keyboardInput: emptyKeyboard, mouseInput: emptyMouse, previousKeyboardInput: emptyKeyboard, previousMouseInput: emptyMouse, displayProcessing, soundOutput, musicOutput, thisFrame });
 		}
 
@@ -63,7 +66,7 @@ GameFrame.getFrame = function (globalState: GlobalState, sessionState: SessionSt
 
 		if (keyboardInput.isPressed(Key.Shift)) {
 			skipFrameCount++;
-			if (skipFrameCount === 5) {
+			if (skipFrameCount === 2) {
 				skipFrameCount = 0;
 				shouldExecuteFrame = true;
 			} else {
@@ -72,7 +75,7 @@ GameFrame.getFrame = function (globalState: GlobalState, sessionState: SessionSt
 		}
 
 		if (shouldExecuteFrame) {
-			let frameInput = FrameInputUtil.getFrameInput(keyboardInput, previousKeyboardInput);
+			let frameInput = FrameInputUtil.getFrameInput(keyboardInput, previousKeyboardInput, globalState.debugMode);
 
 			if (suggestedFrameInput.up && !frameInput.down && !previousFrameInput.up)
 				frameInput.up = true;
@@ -104,19 +107,20 @@ GameFrame.getFrame = function (globalState: GlobalState, sessionState: SessionSt
 			if (result.shouldEndLevel && gameState.playerState.isDeadFrameCount === null && endLevelCounter === null)
 				endLevelCounter = 0;
 
-			if (gameState.playerState.isDeadFrameCount !== null && gameState.playerState.isDeadFrameCount >= 120) {
+			if (gameState.playerState.isDeadFrameCount !== null && gameState.playerState.isDeadFrameCount >= 240) {
 				gameState = GameStateUtil.getSnapshot(autoSavedGameState.gameStateSnapshot);
 				frameInputHistory = autoSavedGameState.frameInputHistory;
 			}
 		} else {
-			let currentFrameInput = FrameInputUtil.getFrameInput(keyboardInput, previousKeyboardInput);
+			let currentFrameInput = FrameInputUtil.getFrameInput(keyboardInput, previousKeyboardInput, globalState.debugMode);
 			suggestedFrameInput = {
 				up: suggestedFrameInput.up || currentFrameInput.up,
 				down: suggestedFrameInput.down || currentFrameInput.down,
 				left: suggestedFrameInput.left || currentFrameInput.left,
 				right: suggestedFrameInput.right || currentFrameInput.right,
 				shoot: suggestedFrameInput.shoot || currentFrameInput.shoot,
-				continueDialogue: suggestedFrameInput.continueDialogue || currentFrameInput.continueDialogue
+				continueDialogue: suggestedFrameInput.continueDialogue || currentFrameInput.continueDialogue,
+				debug_toggleInvulnerability: suggestedFrameInput.debug_toggleInvulnerability || currentFrameInput.debug_toggleInvulnerability
 			};
 		}
 

@@ -17,7 +17,7 @@ let Enemy_Background_Poof: { getEnemy: ({ xMibi, yMibi, scalingFactorScaled, ene
 
 			frameCount++;
 
-			if (frameCount >= 12)
+			if (frameCount >= 24)
 				return {
 					enemies: [],
 					nextEnemyId: nextEnemyId,
@@ -47,7 +47,7 @@ let Enemy_Background_Poof: { getEnemy: ({ xMibi, yMibi, scalingFactorScaled, ene
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
-			let spriteNum = Math.floor(frameCount / 3);
+			let spriteNum = Math.floor(frameCount / 6);
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.Poof,

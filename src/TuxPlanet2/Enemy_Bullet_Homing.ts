@@ -25,16 +25,16 @@ let Enemy_Bullet_Homing: { getEnemy: ({ xMibi, yMibi, initialAngleScaled, enemyI
 
 			let angleScaled = arcTangentScaled(homingTargetXMibi - xMibi, homingTargetYMibi - yMibi);
 
-			let speed: number;
+			let doubledSpeed: number;
 
 			switch (difficulty) {
-				case Difficulty.Easy: speed = 12; break;
-				case Difficulty.Normal: speed = 25; break;
-				case Difficulty.Hard: speed = 35; break;
+				case Difficulty.Easy: doubledSpeed = 12; break;
+				case Difficulty.Normal: doubledSpeed = 25; break;
+				case Difficulty.Hard: doubledSpeed = 35; break;
 			}
 
-			let xSpeed = DTMath.cosineScaled(angleScaled) * speed;
-			let ySpeed = DTMath.sineScaled(angleScaled) * speed;
+			let xSpeed = Math.floor(DTMath.cosineScaled(angleScaled) * doubledSpeed / 2);
+			let ySpeed = Math.floor(DTMath.sineScaled(angleScaled) * doubledSpeed / 2);
 
 			xMibi += xSpeed;
 			yMibi += ySpeed;
@@ -43,7 +43,7 @@ let Enemy_Bullet_Homing: { getEnemy: ({ xMibi, yMibi, initialAngleScaled, enemyI
 
 			frameCounter++;
 
-			if (frameCounter === 6) {
+			if (frameCounter === 12) {
 				let targetX = playerState.xMibi;
 				let targetY = playerState.yMibi;
 
@@ -56,8 +56,8 @@ let Enemy_Bullet_Homing: { getEnemy: ({ xMibi, yMibi, initialAngleScaled, enemyI
 				homingTargetAngleScaled = arcTangentScaled(targetX - homingTargetXMibi, targetY - homingTargetYMibi);
 			}
 
-			homingTargetXMibi += DTMath.cosineScaled(homingTargetAngleScaled) * 95;
-			homingTargetYMibi += DTMath.sineScaled(homingTargetAngleScaled) * 95;
+			homingTargetXMibi += Math.floor(DTMath.cosineScaled(homingTargetAngleScaled) * 95 / 2);
+			homingTargetYMibi += Math.floor(DTMath.sineScaled(homingTargetAngleScaled) * 95 / 2);
 
 			let x = xMibi >> 10;
 			let y = yMibi >> 10;
@@ -117,7 +117,7 @@ let Enemy_Bullet_Homing: { getEnemy: ({ xMibi, yMibi, initialAngleScaled, enemyI
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
-			let spriteNum = Math.floor(frameCounter / 10) % 2;
+			let spriteNum = Math.floor(frameCounter / 20) % 2;
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.Freezewave,

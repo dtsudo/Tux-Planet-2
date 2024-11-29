@@ -2,9 +2,9 @@
 let Enemy_Level1: { getEnemy: ({ enemyId }: { enemyId: number }) => IEnemy } = {} as any;
 
 ((function () {
-	let getEnemy = function (frameCount: number, enemyId: number): IEnemy {
+	let getEnemy = function (frameCount: number, bossSpawnCounter: number | null, enemyId: number): IEnemy {
 
-		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId }) {
+		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, tilemap }) {
 
 			let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
 
@@ -12,46 +12,58 @@ let Enemy_Level1: { getEnemy: ({ enemyId }: { enemyId: number }) => IEnemy } = {
 
 			frameCount++;
 
-			if (frameCount === 5) 
+			if (frameCount === 10) 
 				enemies.push(Enemy_Background_Instructions.getEnemy({ enemyId: nextEnemyId++ }));
 
-			if (frameCount % 120 === 0 && frameCount >= 400 && frameCount <= 1700) {
-				enemies.push(Enemy_Flyamanita.getEnemy({
-					yInitialMibi: (100 + rng.nextInt(500)) << 10,
-					yAngleScaled: rng.nextInt(360 * 128),
-					enemyId: nextEnemyId++
-				}));
+			let newTilemapEnemies = tilemap.getNewEnemies();
+
+			for (let newTilemapEnemy of newTilemapEnemies) {
+
+				if (newTilemapEnemy.id === 0) {
+					enemies.push(Enemy_Flyamanita.getEnemy({
+						xMibi: newTilemapEnemy.xMibi,
+						yInitialMibi: newTilemapEnemy.yMibi,
+						yAngleScaled: rng.nextInt(360 * 128),
+						difficulty: difficulty,
+						enemyId: nextEnemyId++
+					}));
+				} else if (newTilemapEnemy.id === 1) {
+					enemies.push(Enemy_Smartcap.getEnemy({
+						xInitialMibi: newTilemapEnemy.xMibi,
+						yInitialMibi: newTilemapEnemy.yMibi,
+						isFacingRight: false,
+						difficulty: difficulty,
+						enemyId: nextEnemyId++
+					}));
+				} else if (newTilemapEnemy.id === 2) {
+					enemies.push(Enemy_Snowball.getEnemy({
+						xInitialMibi: newTilemapEnemy.xMibi,
+						yInitialMibi: newTilemapEnemy.yMibi,
+						isFacingRight: false,
+						difficulty: difficulty,
+						enemyId: nextEnemyId++
+					}));
+				} else {
+					throw new Error("Unrecognized id: " + newTilemapEnemy.id);
+				}
 			}
 
-			if (frameCount === 1000) {
-				enemies.push(Enemy_FlyamanitaBig.getEnemy({
-					yMibi: 350 * 1024,
-					enemyId: nextEnemyId++
-				}));
-			}
+			if (bossSpawnCounter !== null)
+				bossSpawnCounter++;
 
-			if (frameCount === 1500) {
-				enemies.push(Enemy_FlyamanitaBig.getEnemy({
-					yMibi: 200 * 1024,
-					enemyId: nextEnemyId++
-				}));
-
-				enemies.push(Enemy_FlyamanitaBig.getEnemy({
-					yMibi: 500 * 1024,
-					enemyId: nextEnemyId++
-				}));
-			}
+			if (bossSpawnCounter === null && tilemap.hasReachedEndOfMap())
+				bossSpawnCounter = 0;
 
 			let shouldScreenWipe = false;
 			let shouldCreateAutoSavestate = false;
 
-			if (frameCount === 2000)
+			if (bossSpawnCounter !== null && bossSpawnCounter === 1)
 				shouldScreenWipe = true;
 
-			if (frameCount === 2000 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 20)
+			if (bossSpawnCounter !== null && bossSpawnCounter === 1 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 40)
 				shouldCreateAutoSavestate = true;
 
-			if (frameCount === 2000 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 40) 
+			if (bossSpawnCounter !== null && bossSpawnCounter === 1 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 80) 
 				enemies.push(Enemy_Level1BossCutscene.getEnemy({ enemyId: nextEnemyId++ }));
 
 			let returnVal: EnemyProcessFrameResult = {
@@ -62,14 +74,14 @@ let Enemy_Level1: { getEnemy: ({ enemyId }: { enemyId: number }) => IEnemy } = {
 				shouldCreateAutoSavestate
 			};
 
-			if (frameCount < 2000 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 40)
+			if (bossSpawnCounter === null || bossSpawnCounter < 1 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 80)
 				returnVal.musicToPlay = GameMusic.ForestTop;
 
 			return returnVal;
 		};
 
 		let getSnapshot = function (thisObj: IEnemy) {
-			return getEnemy(frameCount, enemyId);
+			return getEnemy(frameCount, bossSpawnCounter, enemyId);
 		};
 
 		return {
@@ -88,6 +100,6 @@ let Enemy_Level1: { getEnemy: ({ enemyId }: { enemyId: number }) => IEnemy } = {
 	};
 
 	Enemy_Level1.getEnemy = function ({ enemyId }: { enemyId: number }): IEnemy {
-		return getEnemy(0, enemyId);
+		return getEnemy(0, null, enemyId);
 	};
 })());

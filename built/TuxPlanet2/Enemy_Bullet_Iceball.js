@@ -1,8 +1,8 @@
 let Enemy_Bullet_Iceball = {};
 ((function () {
-    let getEnemy = function (xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, screenWipeCountdown, enemyId) {
+    let getEnemy = function (xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, screenWipeCountdown, hasCollisionWithTilemap, collisionWithTilemapCountdown, gameImage, enemyId) {
         let thisEnemyArray = null;
-        let processFrame = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, playerState, soundOutput }) {
+        let processFrame = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, playerState, soundOutput, tilemap }) {
             xMibi += xSpeed;
             yMibi += ySpeed;
             let x = xMibi >> 10;
@@ -24,6 +24,18 @@ let Enemy_Bullet_Iceball = {};
                     };
                 }
             }
+            if (hasCollisionWithTilemap && collisionWithTilemapCountdown === null && tilemap.isSolid(xMibi, yMibi)) {
+                collisionWithTilemapCountdown = 5;
+            }
+            if (collisionWithTilemapCountdown !== null)
+                collisionWithTilemapCountdown--;
+            if (collisionWithTilemapCountdown === 0 || collisionWithTilemapCountdown !== null && !tilemap.isSolid(xMibi, yMibi)) {
+                return {
+                    enemies: [],
+                    nextEnemyId: nextEnemyId,
+                    newRngSeed: rngSeed
+                };
+            }
             if (thisEnemyArray === null)
                 thisEnemyArray = [thisObj];
             return {
@@ -34,10 +46,10 @@ let Enemy_Bullet_Iceball = {};
         };
         let getHitboxes = function () {
             let hitbox = {
-                xMibi: xMibi - 6 * 1024,
-                yMibi: yMibi - 6 * 1024,
-                widthMibi: 13 * 1024,
-                heightMibi: 13 * 1024
+                xMibi: xMibi - 8 * 1024,
+                yMibi: yMibi - 8 * 1024,
+                widthMibi: 17 * 1024,
+                heightMibi: 17 * 1024
             };
             return [hitbox];
         };
@@ -45,10 +57,10 @@ let Enemy_Bullet_Iceball = {};
             return null;
         };
         let getSnapshot = function (thisObj) {
-            return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, screenWipeCountdown, enemyId);
+            return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, screenWipeCountdown, hasCollisionWithTilemap, collisionWithTilemapCountdown, gameImage, enemyId);
         };
         let render = function (displayOutput) {
-            displayOutput.drawImageRotatedClockwise(21 /* GameImage.Iceball */, 0, 0, 6, 6, (xMibi >> 10) - 3 * 3, (yMibi >> 10) - 3 * 3, displayAngleScaled, 3 * 128);
+            displayOutput.drawImageRotatedClockwise(gameImage, 0, 0, 6, 6, (xMibi >> 10) - 3 * 3, (yMibi >> 10) - 3 * 3, displayAngleScaled, 3 * 128);
         };
         let onScreenWipe = function (countdown) {
             screenWipeCountdown = countdown;
@@ -67,10 +79,10 @@ let Enemy_Bullet_Iceball = {};
             render
         };
     };
-    Enemy_Bullet_Iceball.getEnemy = function ({ xMibi, yMibi, speed, angleScaled, enemyId }) {
-        let xSpeed = (speed * DTMath.cosineScaled(angleScaled)) >> 10;
+    Enemy_Bullet_Iceball.getEnemy = function ({ xMibi, yMibi, speed, angleScaled, xVelocityOffsetInMibipixelsPerFrame, hasCollisionWithTilemap, gameImage, enemyId }) {
+        let xSpeed = ((speed * DTMath.cosineScaled(angleScaled)) >> 10) + xVelocityOffsetInMibipixelsPerFrame;
         let ySpeed = (speed * DTMath.sineScaled(angleScaled)) >> 10;
         let displayAngleScaled = -angleScaled - 90 * 128;
-        return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, null, enemyId);
+        return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, null, hasCollisionWithTilemap, null, gameImage, enemyId);
     };
 })());

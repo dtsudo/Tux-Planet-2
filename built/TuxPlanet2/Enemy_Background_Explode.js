@@ -7,7 +7,7 @@ let Enemy_Background_Explode = {};
             if (frameCount === 0)
                 soundOutput.playSound(3 /* GameSound.StandardDeath */, 100);
             frameCount++;
-            if (frameCount >= 15)
+            if (frameCount >= 30)
                 return {
                     enemies: [],
                     nextEnemyId: nextEnemyId,
@@ -25,8 +25,8 @@ let Enemy_Background_Explode = {};
             return getEnemy(xMibi, yMibi, displayAngleScaled, scalingFactorScaled, frameCount, renderOnTop, enemyId);
         };
         let render = function (displayOutput) {
-            let spriteNum = Math.floor(frameCount / 3);
-            displayOutput.drawImageRotatedClockwise(14 /* GameImage.ExplodeF */, spriteNum * 24, 0, 24, 24, (xMibi >> 10) - Math.floor(12 * scalingFactorScaled / 128), (yMibi >> 10) - Math.floor(12 * scalingFactorScaled / 128), displayAngleScaled, scalingFactorScaled);
+            let spriteNum = Math.floor(frameCount / 6);
+            displayOutput.drawImageRotatedClockwise(16 /* GameImage.ExplodeF */, spriteNum * 24, 0, 24, 24, (xMibi >> 10) - Math.floor(12 * scalingFactorScaled / 128), (yMibi >> 10) - Math.floor(12 * scalingFactorScaled / 128), displayAngleScaled, scalingFactorScaled);
         };
         return {
             getSnapshot,

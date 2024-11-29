@@ -21,7 +21,7 @@ let Enemy_Level1BossCutscene = {};
                 };
             }
             xMibi -= xSpeed;
-            xSpeed -= 40;
+            xSpeed -= 10;
             if (xSpeed < 0)
                 xSpeed = 0;
             frameCounter++;
@@ -52,8 +52,8 @@ let Enemy_Level1BossCutscene = {};
             return [damagebox];
         };
         let render = function (displayOutput) {
-            let spriteNum = Math.floor(frameCounter / 10) % 4;
-            displayOutput.drawImageRotatedClockwise(18 /* GameImage.OwlBrown */, 32 + spriteNum * 32, 0, 32, 32, (xMibi >> 10) - 16 * 3, (yMibi >> 10) - 16 * 3, 0, 128 * 3);
+            let spriteNum = Math.floor(frameCounter / 20) % 4;
+            displayOutput.drawImageRotatedClockwise(20 /* GameImage.OwlBrown */, 32 + spriteNum * 32, 0, 32, 32, (xMibi >> 10) - 16 * 3, (yMibi >> 10) - 16 * 3, 0, 128 * 3);
         };
         let getSnapshot = function (thisObj) {
             return getEnemy(xMibi, yMibi, xSpeed, frameCounter, hasStartedCutscene, transformToBoss, enemyId);
@@ -80,6 +80,6 @@ let Enemy_Level1BossCutscene = {};
     };
     Enemy_Level1BossCutscene.getEnemy = function ({ enemyId }) {
         let xMibi = (GlobalConstants.WINDOW_WIDTH + 100) << 10;
-        return getEnemy(xMibi, 350 * 1024, 5000, 0, false, false, enemyId);
+        return getEnemy(xMibi, 350 * 1024, 2500, 0, false, false, enemyId);
     };
 })());

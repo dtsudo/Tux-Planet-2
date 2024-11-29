@@ -14,7 +14,7 @@ let Enemy_Bullet_BouncySnow: { getEnemy: ({ xMibi, angleScaled, explodeYMibi, di
 
 		let thisEnemyArray: IEnemy[] | null = null;
 
-		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput }) {
+		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput, tilemap }) {
 
 			xMibi += xSpeed;
 			yMibi += ySpeed;
@@ -22,7 +22,7 @@ let Enemy_Bullet_BouncySnow: { getEnemy: ({ xMibi, angleScaled, explodeYMibi, di
 			let x = xMibi >> 10;
 			let y = yMibi >> 10;
 
-			if (yMibi < explodeYMibi && screenWipeCountdown === null) {
+			if ((yMibi < explodeYMibi && screenWipeCountdown === null) || tilemap.isSolid(xMibi, yMibi)) {
 				let enemies: IEnemy[] = [];
 
 				let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
@@ -32,13 +32,18 @@ let Enemy_Bullet_BouncySnow: { getEnemy: ({ xMibi, angleScaled, explodeYMibi, di
 				let startingAngle = rng.nextInt(increment);
 
 				for (let i = startingAngle; i < 360 * 128; i += increment) {
-					enemies.push(Enemy_Bullet_Iceball.getEnemy({
-						xMibi: xMibi,
-						yMibi: yMibi,
-						speed: 1024,
-						angleScaled: i,
-						enemyId: nextEnemyId++
-					}));
+					if (screenWipeCountdown === null) {
+						enemies.push(Enemy_Bullet_Iceball.getEnemy({
+							xMibi: xMibi,
+							yMibi: yMibi,
+							speed: 512,
+							angleScaled: i,
+							xVelocityOffsetInMibipixelsPerFrame: 0,
+							hasCollisionWithTilemap: false,
+							gameImage: GameImage.Iceball,
+							enemyId: nextEnemyId++
+						}));
+					}
 				}
 
 				enemies.push(Enemy_Background_ExplodeI.getEnemy({
@@ -140,16 +145,16 @@ let Enemy_Bullet_BouncySnow: { getEnemy: ({ xMibi, angleScaled, explodeYMibi, di
 
 	Enemy_Bullet_BouncySnow.getEnemy = function ({ xMibi, angleScaled, explodeYMibi, difficulty, enemyId }: { xMibi: number, angleScaled: number, explodeYMibi: number, difficulty: Difficulty, enemyId: number }): IEnemy {
 
-		let speed: number;
+		let doubledSpeed: number;
 
 		switch (difficulty) {
-			case Difficulty.Easy: speed = 5; break;
-			case Difficulty.Normal: speed = 7; break;
-			case Difficulty.Hard: speed = 9; break;
+			case Difficulty.Easy: doubledSpeed = 5; break;
+			case Difficulty.Normal: doubledSpeed = 7; break;
+			case Difficulty.Hard: doubledSpeed = 9; break;
 		}
 
-		let xSpeed = speed * DTMath.cosineScaled(angleScaled);
-		let ySpeed = speed * DTMath.sineScaled(angleScaled);
+		let xSpeed = Math.floor(doubledSpeed * DTMath.cosineScaled(angleScaled) / 2);
+		let ySpeed = Math.floor(doubledSpeed * DTMath.sineScaled(angleScaled) / 2);
 
 		let displayAngleScaled = -angleScaled - 90 * 128;
 

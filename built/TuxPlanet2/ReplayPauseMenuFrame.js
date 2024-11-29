@@ -32,7 +32,7 @@ ReplayPauseMenuFrame.getFrame = function (globalState, sessionState, underlyingF
             soundOutput.playSound(0 /* GameSound.Click */, 100);
             switch (option) {
                 case 1: return underlyingFrame;
-                case 2: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, difficulty);
+                case 2: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, difficulty, displayProcessing);
                 case 3: return TitleScreenFrame.getFrame(globalState, sessionState);
                 default: throw new Error("Unrecognized option");
             }

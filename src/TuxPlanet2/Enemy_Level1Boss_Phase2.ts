@@ -23,7 +23,7 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 			return DTMath.arcTangentScaled(x, y);
 		};
 
-		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput }) {
+		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput, tilemap }) {
 
 			let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
 
@@ -31,14 +31,18 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 			yMibi += ySpeed;
 
 			if (playerState.yMibi - yMibi >= 1024 * 20) {
-				if (ySpeed < 1000)
-					ySpeed += 30;
+				if (ySpeed < 500)
+					ySpeed += 8;
 			}
 
 			if (playerState.yMibi - yMibi <= -1024 * 20) {
-				if (ySpeed > -1000)
-					ySpeed -= 30;
+				if (ySpeed > -500)
+					ySpeed -= 8;
 			}
+
+			let handleCollisionWithTilemapResult = Enemy_Level1Boss_Phase1.handleCollisionWithTilemap({ xMibi, yMibi, ySpeed, tilemap });
+			yMibi = handleCollisionWithTilemapResult.newYMibi;
+			ySpeed = handleCollisionWithTilemapResult.newYSpeed;
 
 			frameCounter++;
 
@@ -47,9 +51,9 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 			let ATTACK_COOLDOWN_1: number;
 
 			switch (difficulty) {
-				case Difficulty.Easy: ATTACK_COOLDOWN_1 = 50; break;
-				case Difficulty.Normal: ATTACK_COOLDOWN_1 = 30; break;
-				case Difficulty.Hard: ATTACK_COOLDOWN_1 = 12; break;
+				case Difficulty.Easy: ATTACK_COOLDOWN_1 = 100; break;
+				case Difficulty.Normal: ATTACK_COOLDOWN_1 = 60; break;
+				case Difficulty.Hard: ATTACK_COOLDOWN_1 = 24; break;
 			}
 
 			attackCooldown1--;
@@ -63,15 +67,15 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 				switch (difficulty) {
 					case Difficulty.Easy:
 						increment = 30 * 128;
-						speed = 3 * 1024;
+						speed = 1536;
 						break;
 					case Difficulty.Normal:
 						increment = 15 * 128;
-						speed = 4 * 1024;
+						speed = 2 * 1024;
 						break;
 					case Difficulty.Hard:
 						increment = 10 * 128;
-						speed = 6 * 1024;
+						speed = 3 * 1024;
 						break;
 				}
 
@@ -81,6 +85,9 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 						yMibi: yMibi,
 						speed: speed,
 						angleScaled: i,
+						xVelocityOffsetInMibipixelsPerFrame: 0,
+						hasCollisionWithTilemap: false,
+						gameImage: GameImage.Iceball,
 						enemyId: nextEnemyId++
 					}));
 				}
@@ -89,9 +96,9 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 			let ATTACK_COOLDOWN_2: number;
 
 			switch (difficulty) {
-				case Difficulty.Easy: ATTACK_COOLDOWN_2 = 118; break;
-				case Difficulty.Normal: ATTACK_COOLDOWN_2 = 80; break;
-				case Difficulty.Hard: ATTACK_COOLDOWN_2 = 35; break;
+				case Difficulty.Easy: ATTACK_COOLDOWN_2 = 236; break;
+				case Difficulty.Normal: ATTACK_COOLDOWN_2 = 160; break;
+				case Difficulty.Hard: ATTACK_COOLDOWN_2 = 70; break;
 			}
 
 			attackCooldown2--;
@@ -99,7 +106,15 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 				attackCooldown2 = ATTACK_COOLDOWN_2;
 				soundOutput.playSound(GameSound.EnemyShoot, 100);
 
-				enemies.push(Enemy_Bullet_Freezewave.getEnemy({ xMibi: xMibi, yMibi: yMibi, playerState: playerState, difficulty: difficulty, enemyId: nextEnemyId++ }));
+				let freezewaveSpeed;
+
+				switch (difficulty) {
+					case Difficulty.Easy: freezewaveSpeed = 5; break;
+					case Difficulty.Normal: freezewaveSpeed = 10; break;
+					case Difficulty.Hard: freezewaveSpeed = 15; break;
+				}
+
+				enemies.push(Enemy_Bullet_Freezewave.getEnemy({ xMibi: xMibi, yMibi: yMibi, playerState: playerState, speed: freezewaveSpeed, scalingFactorScaled: 3 * 128, hasCollisionWithTilemap: false, enemyId: nextEnemyId++ }));
 
 				let initialAngleScaled = arcTangentScaled(playerState.xMibi - xMibi, playerState.yMibi - yMibi);
 				enemies.push(Enemy_Bullet_Homing.getEnemy({
@@ -122,7 +137,7 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 			if (transitionToPhase3Counter !== null)
 				transitionToPhase3Counter++;
 
-			if (transitionToPhase3Counter !== null && transitionToPhase3Counter >= 2 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 90) {
+			if (transitionToPhase3Counter !== null && transitionToPhase3Counter >= 2 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 180) {
 				let phase3Boss = Enemy_Level1Boss_Phase3.getEnemy({
 					xMibi: xMibi,
 					yMibi: yMibi,
@@ -150,7 +165,7 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 			if (transitionToPhase3Counter !== null && transitionToPhase3Counter === 2)
 				returnVal.shouldScreenWipe = true;
 
-			if (transitionToPhase3Counter !== null && transitionToPhase3Counter === 2 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 30)
+			if (transitionToPhase3Counter !== null && transitionToPhase3Counter === 2 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 60)
 				returnVal.shouldCreateAutoSavestate = true;
 
 			return returnVal;
@@ -171,7 +186,7 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
-			let spriteNum = Math.floor(frameCounter / 10) % 4;
+			let spriteNum = Math.floor(frameCounter / 20) % 4;
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.OwlBrown,
@@ -210,6 +225,6 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 	};
 
 	Enemy_Level1Boss_Phase2.getEnemy = function ({ xMibi, yMibi, xSpeed, ySpeed, frameCounter, enemyId }: { xMibi: number, yMibi: number, xSpeed: number, ySpeed: number, frameCounter: number, enemyId: number }): IEnemy {
-		return getEnemy(xMibi, yMibi, xSpeed, ySpeed, frameCounter, 0, 120, INITIAL_HP, null, enemyId);
+		return getEnemy(xMibi, yMibi, xSpeed, ySpeed, frameCounter, 0, 240, INITIAL_HP, null, enemyId);
 	};
 })());

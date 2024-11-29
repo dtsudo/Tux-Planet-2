@@ -5,7 +5,7 @@ let Enemy_Background_Poof = {};
         let thisEnemyArray = null;
         let processFrame = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput }) {
             frameCount++;
-            if (frameCount >= 12)
+            if (frameCount >= 24)
                 return {
                     enemies: [],
                     nextEnemyId: nextEnemyId,
@@ -29,8 +29,8 @@ let Enemy_Background_Poof = {};
             return getEnemy(xMibi, yMibi, frameCount, scalingFactorScaled, enemyId);
         };
         let render = function (displayOutput) {
-            let spriteNum = Math.floor(frameCount / 3);
-            displayOutput.drawImageRotatedClockwise(17 /* GameImage.Poof */, spriteNum * 16, 0, 16, 16, (xMibi >> 10) - Math.floor(8 * scalingFactorScaled / 128), (yMibi >> 10) - Math.floor(8 * scalingFactorScaled / 128), 0, scalingFactorScaled);
+            let spriteNum = Math.floor(frameCount / 6);
+            displayOutput.drawImageRotatedClockwise(19 /* GameImage.Poof */, spriteNum * 16, 0, 16, 16, (xMibi >> 10) - Math.floor(8 * scalingFactorScaled / 128), (yMibi >> 10) - Math.floor(8 * scalingFactorScaled / 128), 0, scalingFactorScaled);
         };
         return {
             getSnapshot,

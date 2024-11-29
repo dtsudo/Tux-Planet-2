@@ -3,6 +3,8 @@ let PlayerBulletStateProcessing = {
 	processFrame: function (gameState: GameState): void {
 		let currentPlayerBullets = gameState.playerBulletState.playerBullets;
 
+		let tilemap = gameState.tilemap;
+
 		let newPlayerBullets: PlayerBullet[] = [];
 
 		for (let currentPlayerBullet of currentPlayerBullets) {
@@ -13,6 +15,9 @@ let PlayerBulletStateProcessing = {
 			let newY = currentPlayerBullet.yMibi >> 10;
 
 			if (newX < -50 || newX > GlobalConstants.WINDOW_WIDTH + 50 || newY < -50 || newY > GlobalConstants.WINDOW_HEIGHT + 50)
+				continue;
+
+			if (tilemap.isSolid(currentPlayerBullet.xMibi, currentPlayerBullet.yMibi))
 				continue;
 
 			newPlayerBullets.push(currentPlayerBullet);

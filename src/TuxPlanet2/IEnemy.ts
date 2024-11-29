@@ -13,6 +13,7 @@ type EnemyProcessFrameInput = {
 	nextEnemyId: number,
 	difficulty: Difficulty,
 	playerState: PlayerState,
+	tilemap: Tilemap,
 	soundOutput: ISoundOutput
 }
 

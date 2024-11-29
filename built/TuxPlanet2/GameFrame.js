@@ -21,6 +21,8 @@ GameFrame.getFrame = function (globalState, sessionState, gameState) {
         if (endLevelCounter !== null)
             endLevelCounter++;
         let frame = getNextFrameHelper({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame });
+        if (!keyboardInput.isPressed(43 /* Key.Shift */))
+            frame = getNextFrameHelper({ keyboardInput, mouseInput, previousKeyboardInput: keyboardInput, previousMouseInput: mouseInput, displayProcessing, soundOutput, musicOutput, thisFrame });
         if (globalState.debugMode) {
             if (keyboardInput.isPressed(26 /* Key.Zero */) && !previousKeyboardInput.isPressed(26 /* Key.Zero */) && endLevelCounter === null)
                 endLevelCounter = 0;
@@ -30,7 +32,7 @@ GameFrame.getFrame = function (globalState, sessionState, gameState) {
         if (globalState.debugMode && keyboardInput.isPressed(27 /* Key.One */)) {
             let emptyKeyboard = EmptyKeyboard.getEmptyKeyboard();
             let emptyMouse = EmptyMouse.getEmptyMouse();
-            for (let i = 0; i < 4; i++)
+            for (let i = 0; i < 20; i++)
                 frame = getNextFrameHelper({ keyboardInput: emptyKeyboard, mouseInput: emptyMouse, previousKeyboardInput: emptyKeyboard, previousMouseInput: emptyMouse, displayProcessing, soundOutput, musicOutput, thisFrame });
         }
         return frame;
@@ -40,7 +42,7 @@ GameFrame.getFrame = function (globalState, sessionState, gameState) {
         renderKonqiHitbox = keyboardInput.isPressed(43 /* Key.Shift */);
         if (keyboardInput.isPressed(43 /* Key.Shift */)) {
             skipFrameCount++;
-            if (skipFrameCount === 5) {
+            if (skipFrameCount === 2) {
                 skipFrameCount = 0;
                 shouldExecuteFrame = true;
             }
@@ -49,7 +51,7 @@ GameFrame.getFrame = function (globalState, sessionState, gameState) {
             }
         }
         if (shouldExecuteFrame) {
-            let frameInput = FrameInputUtil.getFrameInput(keyboardInput, previousKeyboardInput);
+            let frameInput = FrameInputUtil.getFrameInput(keyboardInput, previousKeyboardInput, globalState.debugMode);
             if (suggestedFrameInput.up && !frameInput.down && !previousFrameInput.up)
                 frameInput.up = true;
             if (suggestedFrameInput.down && !frameInput.up && !previousFrameInput.down)
@@ -74,20 +76,21 @@ GameFrame.getFrame = function (globalState, sessionState, gameState) {
             }
             if (result.shouldEndLevel && gameState.playerState.isDeadFrameCount === null && endLevelCounter === null)
                 endLevelCounter = 0;
-            if (gameState.playerState.isDeadFrameCount !== null && gameState.playerState.isDeadFrameCount >= 120) {
+            if (gameState.playerState.isDeadFrameCount !== null && gameState.playerState.isDeadFrameCount >= 240) {
                 gameState = GameStateUtil.getSnapshot(autoSavedGameState.gameStateSnapshot);
                 frameInputHistory = autoSavedGameState.frameInputHistory;
             }
         }
         else {
-            let currentFrameInput = FrameInputUtil.getFrameInput(keyboardInput, previousKeyboardInput);
+            let currentFrameInput = FrameInputUtil.getFrameInput(keyboardInput, previousKeyboardInput, globalState.debugMode);
             suggestedFrameInput = {
                 up: suggestedFrameInput.up || currentFrameInput.up,
                 down: suggestedFrameInput.down || currentFrameInput.down,
                 left: suggestedFrameInput.left || currentFrameInput.left,
                 right: suggestedFrameInput.right || currentFrameInput.right,
                 shoot: suggestedFrameInput.shoot || currentFrameInput.shoot,
-                continueDialogue: suggestedFrameInput.continueDialogue || currentFrameInput.continueDialogue
+                continueDialogue: suggestedFrameInput.continueDialogue || currentFrameInput.continueDialogue,
+                debug_toggleInvulnerability: suggestedFrameInput.debug_toggleInvulnerability || currentFrameInput.debug_toggleInvulnerability
             };
         }
         if (keyboardInput.isPressed(2 /* Key.C */) && !previousKeyboardInput.isPressed(2 /* Key.C */) && gameState.playerState.isDeadFrameCount === null)

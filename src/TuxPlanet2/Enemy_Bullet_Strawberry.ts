@@ -104,7 +104,7 @@ let Enemy_Bullet_Strawberry: { getEnemy: ({ xMibi, yMibi, angleScaled, enemyId }
 
 	Enemy_Bullet_Strawberry.getEnemy = function ({ xMibi, yMibi, angleScaled, enemyId }: { xMibi: number, yMibi: number, angleScaled: number, enemyId: number }): IEnemy {
 
-		let speed = 4;
+		let speed = 2;
 
 		let xSpeed = speed * DTMath.cosineScaled(angleScaled);
 		let ySpeed = speed * DTMath.sineScaled(angleScaled);

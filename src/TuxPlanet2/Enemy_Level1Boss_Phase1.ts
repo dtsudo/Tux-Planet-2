@@ -1,7 +1,54 @@
 
-let Enemy_Level1Boss_Phase1: { BOSS_MUSIC: GameMusic, getEnemy: ({ xMibi, yMibi, frameCounter, enemyId }: { xMibi: number, yMibi: number, frameCounter: number, enemyId: number }) => IEnemy } = {} as any;
+let Enemy_Level1Boss_Phase1: {
+	BOSS_MUSIC: GameMusic,
+	handleCollisionWithTilemap: ({ xMibi, yMibi, ySpeed, tilemap }: { xMibi: number, yMibi: number, ySpeed: number, tilemap: Tilemap }) => { newYMibi: number, newYSpeed: number },
+	getEnemy: ({ xMibi, yMibi, frameCounter, enemyId }: { xMibi: number, yMibi: number, frameCounter: number, enemyId: number }) => IEnemy
+} = {} as any;
 
 Enemy_Level1Boss_Phase1.BOSS_MUSIC = GameMusic.ChiptuneLevel3;
+
+Enemy_Level1Boss_Phase1.handleCollisionWithTilemap = function ({ xMibi, yMibi, ySpeed, tilemap }) {
+
+	let yMibiLowerBound = yMibi - 16 * 3 * 1024;
+
+	if (!tilemap.isSolid(xMibi, yMibiLowerBound)) {
+		return {
+			newYMibi: yMibi,
+			newYSpeed: ySpeed
+		};
+	}
+
+	let yMibiIncrease = 0;
+
+	while (true) {
+		if (!tilemap.isSolid(xMibi, yMibiLowerBound + yMibiIncrease + 100))
+			break;
+		yMibiIncrease += 100;
+	}
+
+	while (true) {
+		if (!tilemap.isSolid(xMibi, yMibiLowerBound + yMibiIncrease + 20))
+			break;
+		yMibiIncrease += 20;
+	}
+
+	while (true) {
+		if (!tilemap.isSolid(xMibi, yMibiLowerBound + yMibiIncrease + 4))
+			break;
+		yMibiIncrease += 4;
+	}
+
+	while (true) {
+		if (!tilemap.isSolid(xMibi, yMibiLowerBound + yMibiIncrease + 1))
+			break;
+		yMibiIncrease += 1;
+	}
+
+	return {
+		newYMibi: yMibi + yMibiIncrease + 1,
+		newYSpeed: 0
+	};
+};
 
 ((function () {
 
@@ -21,7 +68,7 @@ Enemy_Level1Boss_Phase1.BOSS_MUSIC = GameMusic.ChiptuneLevel3;
 			hp: number,
 			enemyId: number): IEnemy {
 
-		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput }) {
+		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput, tilemap }) {
 
 			let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
 
@@ -31,18 +78,22 @@ Enemy_Level1Boss_Phase1.BOSS_MUSIC = GameMusic.ChiptuneLevel3;
 			yMibi += ySpeed;
 
 			if (playerState.yMibi - yMibi >= 1024 * 20) {
-				if (ySpeed < 1000)
-					ySpeed += 30;
+				if (ySpeed < 500)
+					ySpeed += 8;
 			}
 
 			if (playerState.yMibi - yMibi <= -1024 * 20) {
-				if (ySpeed > -1000)
-					ySpeed -= 30;
+				if (ySpeed > -500)
+					ySpeed -= 8;
 			}
+
+			let handleCollisionWithTilemapResult = Enemy_Level1Boss_Phase1.handleCollisionWithTilemap({ xMibi, yMibi, ySpeed, tilemap });
+			yMibi = handleCollisionWithTilemapResult.newYMibi;
+			ySpeed = handleCollisionWithTilemapResult.newYSpeed;
 
 			let enemies = [thisObj];
 
-			let ATTACK_COOLDOWN_1 = 90;
+			let ATTACK_COOLDOWN_1 = 180;
 
 			attackCooldown1--;
 			if (attackCooldown1 <= 0 && transitionToPhase2Counter === null) {
@@ -68,6 +119,7 @@ Enemy_Level1Boss_Phase1.BOSS_MUSIC = GameMusic.ChiptuneLevel3;
 						xMibi: xMibi,
 						yMibi: yMibi,
 						directionScaled: i,
+						xVelocityOffsetInMibipixelsPerFrame: 0,
 						rotatesClockwise: rng.nextBool(),
 						displayAngleScaled: rng.nextInt(360 * 128),
 						gameImage: GameImage.NooneIce,
@@ -80,9 +132,9 @@ Enemy_Level1Boss_Phase1.BOSS_MUSIC = GameMusic.ChiptuneLevel3;
 			let ATTACK_COOLDOWN_2: number;
 
 			switch (difficulty) {
-				case Difficulty.Easy: ATTACK_COOLDOWN_2 = 20; break;
-				case Difficulty.Normal: ATTACK_COOLDOWN_2 = 24; break;
-				case Difficulty.Hard: ATTACK_COOLDOWN_2 = 10; break;
+				case Difficulty.Easy: ATTACK_COOLDOWN_2 = 40; break;
+				case Difficulty.Normal: ATTACK_COOLDOWN_2 = 48; break;
+				case Difficulty.Hard: ATTACK_COOLDOWN_2 = 20; break;
 			}
 
 			attackCooldown2--;
@@ -143,7 +195,7 @@ Enemy_Level1Boss_Phase1.BOSS_MUSIC = GameMusic.ChiptuneLevel3;
 			if (transitionToPhase2Counter !== null)
 				transitionToPhase2Counter++;
 
-			if (transitionToPhase2Counter !== null && transitionToPhase2Counter >= 2 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 90) {
+			if (transitionToPhase2Counter !== null && transitionToPhase2Counter >= 2 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 180) {
 				let phase2Boss = Enemy_Level1Boss_Phase2.getEnemy({
 					xMibi: xMibi,
 					yMibi: yMibi,
@@ -170,7 +222,7 @@ Enemy_Level1Boss_Phase1.BOSS_MUSIC = GameMusic.ChiptuneLevel3;
 			if (transitionToPhase2Counter !== null && transitionToPhase2Counter === 2)
 				returnVal.shouldScreenWipe = true;
 
-			if (transitionToPhase2Counter !== null && transitionToPhase2Counter === 2 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 30)
+			if (transitionToPhase2Counter !== null && transitionToPhase2Counter === 2 + GameStateProcessing.SCREEN_WIPE_MAX_COUNTDOWN + 60)
 				returnVal.shouldCreateAutoSavestate = true;
 
 			return returnVal;
@@ -191,7 +243,7 @@ Enemy_Level1Boss_Phase1.BOSS_MUSIC = GameMusic.ChiptuneLevel3;
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
-			let spriteNum = Math.floor(frameCounter / 10) % 4;
+			let spriteNum = Math.floor(frameCounter / 20) % 4;
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.OwlBrown,

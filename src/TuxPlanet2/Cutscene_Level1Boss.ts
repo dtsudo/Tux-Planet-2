@@ -70,12 +70,14 @@ let Cutscene_Level1Boss: { getCutscene: (owlEnemyId: number) => ICutscene } = {}
 
 			if (beginBossFightCounter !== null) {
 				beginBossFightCounter++;
-				if (beginBossFightCounter === 1)
+				if (beginBossFightCounter === 1) {
 					gameState.background.startBoss();
+					gameState.tilemap.startBoss();
+				}
 				musicOutput.playMusic(Enemy_Level1Boss_Phase1.BOSS_MUSIC, 100);
 			}
 
-			if (beginBossFightCounter !== null && beginBossFightCounter === 50) {
+			if (beginBossFightCounter !== null && beginBossFightCounter === 100) {
 				gameState.cutscene = null;
 				owlEnemyAsOwl.transformToLevel1Boss();
 			}
@@ -87,7 +89,8 @@ let Cutscene_Level1Boss: { getCutscene: (owlEnemyId: number) => ICutscene } = {}
 					left: frameInput.left,
 					right: frameInput.right,
 					shoot: false,
-					continueDialogue: frameInput.continueDialogue
+					continueDialogue: frameInput.continueDialogue,
+					debug_toggleInvulnerability: frameInput.debug_toggleInvulnerability
 				},
 				shouldCreateAutoSavestate: beginBossFightCounter !== null && beginBossFightCounter === 1
 			};

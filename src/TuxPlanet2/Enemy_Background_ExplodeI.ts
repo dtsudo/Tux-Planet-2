@@ -22,7 +22,7 @@ let Enemy_Background_ExplodeI: { getEnemy: ({ xMibi, yMibi, displayAngleScaled, 
 
 			frameCount++;
 
-			if (frameCount >= 15)
+			if (frameCount >= 30)
 				return {
 					enemies: [],
 					nextEnemyId: nextEnemyId,
@@ -44,7 +44,7 @@ let Enemy_Background_ExplodeI: { getEnemy: ({ xMibi, yMibi, displayAngleScaled, 
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
-			let spriteNum = Math.floor(frameCount / 3);
+			let spriteNum = Math.floor(frameCount / 6);
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.ExplodeI,

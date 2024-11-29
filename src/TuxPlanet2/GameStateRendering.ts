@@ -4,6 +4,8 @@ let GameStateRendering = {
 
 		gameState.background.render(displayOutput);
 
+		gameState.tilemap.renderBackground(displayOutput);
+
 		let backgroundEnemies: IEnemy[] = [];
 		let normalEnemies: IEnemy[] = [];
 		let bulletEnemies: IEnemy[] = [];
@@ -22,7 +24,7 @@ let GameStateRendering = {
 		}
 
 		if (gameState.playerState.isDeadFrameCount === null) {
-			let konqiSpriteNum = Math.floor(gameState.frameCount / 12) % 6;
+			let konqiSpriteNum = Math.floor(gameState.frameCount / 24) % 6;
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.KonqiAir,
@@ -44,9 +46,9 @@ let GameStateRendering = {
 					white,
 					true);
 		} else {
-			let konqiSpriteNum = Math.floor(gameState.frameCount / 12) % 2;
+			let konqiSpriteNum = Math.floor(gameState.frameCount / 24) % 2;
 
-			let yPositionOffset = 30000 * gameState.playerState.isDeadFrameCount - 1000 * gameState.playerState.isDeadFrameCount * gameState.playerState.isDeadFrameCount;
+			let yPositionOffset = 15000 * gameState.playerState.isDeadFrameCount - 250 * gameState.playerState.isDeadFrameCount * gameState.playerState.isDeadFrameCount;
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.KonqiAir,
@@ -61,7 +63,7 @@ let GameStateRendering = {
 		}
 
 		for (let playerBullet of gameState.playerBulletState.playerBullets) {
-			let bulletSpriteNum = Math.floor((gameState.frameCount + playerBullet.animationOffset) / 4) % 6;
+			let bulletSpriteNum = Math.floor((gameState.frameCount + playerBullet.animationOffset) / 8) % 6;
 
 			let imageX = (bulletSpriteNum % 3) * 8;
 			let imageY = bulletSpriteNum <= 2 ? 0 : 8;
@@ -85,6 +87,8 @@ let GameStateRendering = {
 		for (let enemy of bulletEnemies) {
 			enemy.render(displayOutput);
 		}
+
+		gameState.tilemap.renderForeground(displayOutput);
 
 		gameState.bossHealthDisplay.render(displayOutput);
 

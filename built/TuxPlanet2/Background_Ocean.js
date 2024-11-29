@@ -1,48 +1,37 @@
 let Background_Ocean = {};
 ((function () {
-    let getBackground;
-    getBackground = function (xOffset, bossFrameCounter) {
+    let getBackground = function (xOffsetMibi, bossFrameCounter) {
         let getSnapshot = function (thisObj) {
-            return getBackground(xOffset, bossFrameCounter);
+            return getBackground(xOffsetMibi, bossFrameCounter);
         };
         let processFrame = function () {
-            xOffset -= 2;
-            if (xOffset <= -480 * 3)
-                xOffset += 480 * 3;
-            if (bossFrameCounter !== null && bossFrameCounter < 100)
+            xOffsetMibi -= 256;
+            if (xOffsetMibi <= -480 * 3 * 1024)
+                xOffsetMibi += 480 * 3 * 1024;
+            if (bossFrameCounter !== null && bossFrameCounter < 200)
                 bossFrameCounter++;
             if (bossFrameCounter !== null) {
-                xOffset -= 1;
-                if (bossFrameCounter > 10)
-                    xOffset -= 1;
-                if (bossFrameCounter > 20)
-                    xOffset -= 1;
-                if (bossFrameCounter > 30)
-                    xOffset -= 1;
+                xOffsetMibi -= 256;
                 if (bossFrameCounter > 40)
-                    xOffset -= 1;
-                if (bossFrameCounter > 50)
-                    xOffset -= 1;
-                if (bossFrameCounter > 60)
-                    xOffset -= 1;
-                if (bossFrameCounter > 70)
-                    xOffset -= 1;
+                    xOffsetMibi -= 256;
                 if (bossFrameCounter > 80)
-                    xOffset -= 1;
-                if (bossFrameCounter > 90)
-                    xOffset -= 1;
-                if (xOffset <= -480 * 3)
-                    xOffset += 480 * 3;
+                    xOffsetMibi -= 256;
+                if (bossFrameCounter > 120)
+                    xOffsetMibi -= 256;
+                if (bossFrameCounter > 160)
+                    xOffsetMibi -= 256;
+                if (xOffsetMibi <= -480 * 3 * 1024)
+                    xOffsetMibi += 480 * 3 * 1024;
             }
         };
         let startBoss = function () {
             bossFrameCounter = 0;
         };
         let render = function (displayOutput) {
-            displayOutput.drawImageRotatedClockwise(11 /* GameImage.Ocean */, 0, 0, 480, 240, xOffset, 0, 0, 128 * 3);
-            displayOutput.drawImageRotatedClockwise(11 /* GameImage.Ocean */, 0, 0, 480, 240, xOffset + 480 * 3, 0, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(13 /* GameImage.Ocean */, 0, 0, 480, 240, xOffsetMibi >> 10, 0, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(13 /* GameImage.Ocean */, 0, 0, 480, 240, (xOffsetMibi >> 10) + 480 * 3, 0, 0, 128 * 3);
             if (bossFrameCounter !== null) {
-                let alpha = bossFrameCounter * 5;
+                let alpha = Math.floor(bossFrameCounter * 5 / 2);
                 if (alpha > 200)
                     alpha = 200;
                 displayOutput.drawRectangle(0, 0, GlobalConstants.WINDOW_WIDTH, GlobalConstants.WINDOW_HEIGHT, { r: 0, g: 0, b: 0, alpha: alpha }, true);

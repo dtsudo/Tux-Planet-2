@@ -12,21 +12,29 @@ let GameImageUtil = {
             8 /* GameImage.KonqiAir */,
             9 /* GameImage.TinyFlame */,
             10 /* GameImage.FlyAmanita */,
-            11 /* GameImage.Ocean */,
-            12 /* GameImage.Noone */,
-            13 /* GameImage.NooneIce */,
-            14 /* GameImage.ExplodeF */,
-            15 /* GameImage.Strawberry */,
-            16 /* GameImage.Freezewave */,
-            17 /* GameImage.Poof */,
-            18 /* GameImage.OwlBrown */,
-            19 /* GameImage.CyraDoll */,
-            20 /* GameImage.DashieDoll */,
-            21 /* GameImage.Iceball */,
-            22 /* GameImage.Skull */,
-            23 /* GameImage.BossHealth */,
-            24 /* GameImage.ExplodeI */,
-            25 /* GameImage.BouncySnow */
+            11 /* GameImage.Smartcap */,
+            12 /* GameImage.Smartcap_Mirrored */,
+            13 /* GameImage.Ocean */,
+            14 /* GameImage.Noone */,
+            15 /* GameImage.NooneIce */,
+            16 /* GameImage.ExplodeF */,
+            17 /* GameImage.Strawberry */,
+            18 /* GameImage.Freezewave */,
+            19 /* GameImage.Poof */,
+            20 /* GameImage.OwlBrown */,
+            21 /* GameImage.CyraDoll */,
+            22 /* GameImage.DashieDoll */,
+            23 /* GameImage.Iceball */,
+            24 /* GameImage.Skull */,
+            25 /* GameImage.BossHealth */,
+            26 /* GameImage.ExplodeI */,
+            27 /* GameImage.BouncySnow */,
+            28 /* GameImage.BouncySnow_Mirrored */,
+            29 /* GameImage.TsSnow */,
+            30 /* GameImage.SignPost */,
+            31 /* GameImage.Igloo */,
+            32 /* GameImage.IceCaveTiles */,
+            33 /* GameImage.Treetops */
         ];
     },
     getFilename: function (image) {
@@ -42,21 +50,29 @@ let GameImageUtil = {
             case 8 /* GameImage.KonqiAir */: return "KelvinShadewing/konqiair.png";
             case 9 /* GameImage.TinyFlame */: return "KelvinShadewing/tinyflame.png";
             case 10 /* GameImage.FlyAmanita */: return "KelvinShadewing/flyamanita.png";
-            case 11 /* GameImage.Ocean */: return "KnoblePersona/ocean.png";
-            case 12 /* GameImage.Noone */: return "KelvinShadewing/noone.png";
-            case 13 /* GameImage.NooneIce */: return "KelvinShadewing/noone_ice.png";
-            case 14 /* GameImage.ExplodeF */: return "KelvinShadewing/explodeF.png";
-            case 15 /* GameImage.Strawberry */: return "KelvinShadewing/strawberry.png";
-            case 16 /* GameImage.Freezewave */: return "KelvinShadewing/freezewave.png";
-            case 17 /* GameImage.Poof */: return "KelvinShadewing/poof.png";
-            case 18 /* GameImage.OwlBrown */: return "KelvinShadewing/owl-brown.png";
-            case 19 /* GameImage.CyraDoll */: return "KelvinShadewing/cyradoll.png";
-            case 20 /* GameImage.DashieDoll */: return "KelvinShadewing/dashie-doll.png";
-            case 21 /* GameImage.Iceball */: return "KelvinShadewing/iceball.png";
-            case 22 /* GameImage.Skull */: return "KelvinShadewing/skull.png";
-            case 23 /* GameImage.BossHealth */: return "KelvinShadewing/boss-health.png";
-            case 24 /* GameImage.ExplodeI */: return "KelvinShadewing/explodeI.png";
-            case 25 /* GameImage.BouncySnow */: return "KelvinShadewing/bouncysnow.png";
+            case 11 /* GameImage.Smartcap */: return "KelvinShadewing/smartcap.png";
+            case 12 /* GameImage.Smartcap_Mirrored */: return "KelvinShadewing/smartcap_mirrored.png";
+            case 13 /* GameImage.Ocean */: return "KnoblePersona/ocean.png";
+            case 14 /* GameImage.Noone */: return "KelvinShadewing/noone.png";
+            case 15 /* GameImage.NooneIce */: return "KelvinShadewing/noone_ice.png";
+            case 16 /* GameImage.ExplodeF */: return "KelvinShadewing/explodeF.png";
+            case 17 /* GameImage.Strawberry */: return "KelvinShadewing/strawberry.png";
+            case 18 /* GameImage.Freezewave */: return "KelvinShadewing/freezewave.png";
+            case 19 /* GameImage.Poof */: return "KelvinShadewing/poof.png";
+            case 20 /* GameImage.OwlBrown */: return "KelvinShadewing/owl-brown.png";
+            case 21 /* GameImage.CyraDoll */: return "KelvinShadewing/cyradoll.png";
+            case 22 /* GameImage.DashieDoll */: return "KelvinShadewing/dashie-doll.png";
+            case 23 /* GameImage.Iceball */: return "KelvinShadewing/iceball.png";
+            case 24 /* GameImage.Skull */: return "KelvinShadewing/skull.png";
+            case 25 /* GameImage.BossHealth */: return "KelvinShadewing/boss-health.png";
+            case 26 /* GameImage.ExplodeI */: return "KelvinShadewing/explodeI.png";
+            case 27 /* GameImage.BouncySnow */: return "KelvinShadewing/bouncysnow.png";
+            case 28 /* GameImage.BouncySnow_Mirrored */: return "KelvinShadewing/bouncysnow_mirrored.png";
+            case 29 /* GameImage.TsSnow */: return "KelvinShadewing/tssnow.png";
+            case 30 /* GameImage.SignPost */: return "Nemisys/signpost.png";
+            case 31 /* GameImage.Igloo */: return "KelvinShadewing/igloo.png";
+            case 32 /* GameImage.IceCaveTiles */: return "KelvinShadewing/icecavetiles.png";
+            case 33 /* GameImage.Treetops */: return "Treetops/treetops.png";
         }
     }
 };

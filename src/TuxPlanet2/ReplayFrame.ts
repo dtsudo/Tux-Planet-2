@@ -1,9 +1,9 @@
 
-let ReplayFrame: { getFrame: (globalState: GlobalState, sessionState: SessionState, frameInputHistory: FrameInputHistory, difficulty: Difficulty) => IFrame } = {} as any;
+let ReplayFrame: { getFrame: (globalState: GlobalState, sessionState: SessionState, frameInputHistory: FrameInputHistory, difficulty: Difficulty, displayProcessing: IDisplayProcessing) => IFrame } = {} as any;
 
-ReplayFrame.getFrame = function (globalState: GlobalState, sessionState: SessionState, frameInputHistory: FrameInputHistory, difficulty: Difficulty): IFrame {
+ReplayFrame.getFrame = function (globalState: GlobalState, sessionState: SessionState, frameInputHistory: FrameInputHistory, difficulty: Difficulty, displayProcessing: IDisplayProcessing): IFrame {
 
-	let gameState = GameStateUtil.getInitialGameState(1, difficulty);
+	let gameState = GameStateUtil.getInitialGameState(Level.Level1, difficulty, displayProcessing);
 	let savedGameState: GameState | null = null;
 	let skipFrameCount = 0;
 
@@ -28,10 +28,13 @@ ReplayFrame.getFrame = function (globalState: GlobalState, sessionState: Session
 
 		let frame = getNextFrameHelper({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame });
 
+		if (!keyboardInput.isPressed(Key.Shift))
+			frame = getNextFrameHelper({ keyboardInput, mouseInput, previousKeyboardInput: keyboardInput, previousMouseInput: mouseInput, displayProcessing, soundOutput, musicOutput, thisFrame });
+
 		if (keyboardInput.isPressed(Key.Z) && !keyboardInput.isPressed(Key.Shift)) {
 			let emptyKeyboard = EmptyKeyboard.getEmptyKeyboard();
 			let emptyMouse = EmptyMouse.getEmptyMouse();
-			for (let i = 0; i < 4; i++) {
+			for (let i = 0; i < 8; i++) {
 				frame = getNextFrameHelper({ keyboardInput: emptyKeyboard, mouseInput: emptyMouse, previousKeyboardInput: emptyKeyboard, previousMouseInput: emptyMouse, displayProcessing, soundOutput, musicOutput, thisFrame });
 			}
 		}
@@ -51,7 +54,7 @@ ReplayFrame.getFrame = function (globalState: GlobalState, sessionState: Session
 
 		if (keyboardInput.isPressed(Key.Shift)) {
 			skipFrameCount++;
-			if (skipFrameCount === 5) {
+			if (skipFrameCount === 2) {
 				skipFrameCount = 0;
 				shouldExecuteFrame = true;
 			} else {
@@ -69,7 +72,8 @@ ReplayFrame.getFrame = function (globalState: GlobalState, sessionState: Session
 					left: false,
 					right: false,
 					shoot: false,
-					continueDialogue: false
+					continueDialogue: false,
+					debug_toggleInvulnerability: false
 				};
 
 			let result = GameStateProcessing.processFrame(gameState, frameInput, soundOutput, musicOutput);

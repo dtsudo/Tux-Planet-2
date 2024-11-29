@@ -2,24 +2,29 @@ let Enemy_Bullet_BouncySnow = {};
 ((function () {
     let getEnemy = function (xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, explodeYMibi, screenWipeCountdown, enemyId) {
         let thisEnemyArray = null;
-        let processFrame = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput }) {
+        let processFrame = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput, tilemap }) {
             xMibi += xSpeed;
             yMibi += ySpeed;
             let x = xMibi >> 10;
             let y = yMibi >> 10;
-            if (yMibi < explodeYMibi && screenWipeCountdown === null) {
+            if ((yMibi < explodeYMibi && screenWipeCountdown === null) || tilemap.isSolid(xMibi, yMibi)) {
                 let enemies = [];
                 let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
                 let increment = 45 * 128;
                 let startingAngle = rng.nextInt(increment);
                 for (let i = startingAngle; i < 360 * 128; i += increment) {
-                    enemies.push(Enemy_Bullet_Iceball.getEnemy({
-                        xMibi: xMibi,
-                        yMibi: yMibi,
-                        speed: 1024,
-                        angleScaled: i,
-                        enemyId: nextEnemyId++
-                    }));
+                    if (screenWipeCountdown === null) {
+                        enemies.push(Enemy_Bullet_Iceball.getEnemy({
+                            xMibi: xMibi,
+                            yMibi: yMibi,
+                            speed: 512,
+                            angleScaled: i,
+                            xVelocityOffsetInMibipixelsPerFrame: 0,
+                            hasCollisionWithTilemap: false,
+                            gameImage: 23 /* GameImage.Iceball */,
+                            enemyId: nextEnemyId++
+                        }));
+                    }
                 }
                 enemies.push(Enemy_Background_ExplodeI.getEnemy({
                     xMibi: xMibi,
@@ -76,7 +81,7 @@ let Enemy_Bullet_BouncySnow = {};
             return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, explodeYMibi, screenWipeCountdown, enemyId);
         };
         let render = function (displayOutput) {
-            displayOutput.drawImageRotatedClockwise(25 /* GameImage.BouncySnow */, 0, 0, 16, 16, (xMibi >> 10) - 8 * 3, (yMibi >> 10) - 8 * 3, displayAngleScaled, 3 * 128);
+            displayOutput.drawImageRotatedClockwise(27 /* GameImage.BouncySnow */, 0, 0, 16, 16, (xMibi >> 10) - 8 * 3, (yMibi >> 10) - 8 * 3, displayAngleScaled, 3 * 128);
         };
         let onScreenWipe = function (countdown) {
             screenWipeCountdown = countdown;
@@ -96,20 +101,20 @@ let Enemy_Bullet_BouncySnow = {};
         };
     };
     Enemy_Bullet_BouncySnow.getEnemy = function ({ xMibi, angleScaled, explodeYMibi, difficulty, enemyId }) {
-        let speed;
+        let doubledSpeed;
         switch (difficulty) {
             case 0 /* Difficulty.Easy */:
-                speed = 5;
+                doubledSpeed = 5;
                 break;
             case 1 /* Difficulty.Normal */:
-                speed = 7;
+                doubledSpeed = 7;
                 break;
             case 2 /* Difficulty.Hard */:
-                speed = 9;
+                doubledSpeed = 9;
                 break;
         }
-        let xSpeed = speed * DTMath.cosineScaled(angleScaled);
-        let ySpeed = speed * DTMath.sineScaled(angleScaled);
+        let xSpeed = Math.floor(doubledSpeed * DTMath.cosineScaled(angleScaled) / 2);
+        let ySpeed = Math.floor(doubledSpeed * DTMath.sineScaled(angleScaled) / 2);
         let displayAngleScaled = -angleScaled - 90 * 128;
         let yMibi = (GlobalConstants.WINDOW_HEIGHT + 50) << 10;
         return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, explodeYMibi, null, enemyId);

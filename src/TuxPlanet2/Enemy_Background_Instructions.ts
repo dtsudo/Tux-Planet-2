@@ -12,7 +12,7 @@ let Enemy_Background_Instructions: { getEnemy: ({ enemyId }: { enemyId: number }
 
 		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput }) {
 
-			xMibi -= 1500;
+			xMibi -= 600;
 
 			if (xMibi < -1000 * 1024)
 				return {

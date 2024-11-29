@@ -51,12 +51,7 @@ let GameInitializer = ((function () {
             removeMarginOnBody();
         if (buildType === 2 /* BuildType.Electron */)
             addResizingCanvasLogic(canvasNode);
-        let globalState = {
-            buildType: buildType,
-            debugMode: debugMode,
-            saveAndLoadData: SaveAndLoadDataUtil.getSaveAndLoadData()
-        };
-        gameFrame = GameEntryFrame.getFirstFrame(globalState);
+        gameFrame = GameEntryFrame.getFirstFrame(buildType, debugMode);
         gameKeyboard = GameKeyboard.getKeyboard(buildType === 1 /* BuildType.WebEmbedded */ || buildType === 2 /* BuildType.Electron */);
         gameMouse = GameMouse.getMouse();
         display = CanvasDisplay.getDisplay(GlobalConstants.WINDOW_HEIGHT);

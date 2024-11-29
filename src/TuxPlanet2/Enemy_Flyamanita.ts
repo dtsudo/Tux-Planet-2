@@ -1,8 +1,17 @@
 
-let Enemy_Flyamanita: { getEnemy: ({ yInitialMibi, yAngleScaled, enemyId }: { yInitialMibi: number, yAngleScaled: number, enemyId: number }) => IEnemy } = {} as any;
+let Enemy_Flyamanita: {
+	getEnemy: ({ xMibi, yInitialMibi, yAngleScaled, difficulty, enemyId }: { xMibi: number, yInitialMibi: number, yAngleScaled: number, difficulty: Difficulty, enemyId: number }) => IEnemy
+} = {} as any;
 
 ((function () {
-	let ATTACK_COOLDOWN = 120;
+
+	let getAttackCooldown = function (difficulty: Difficulty): number {
+		switch (difficulty) {
+			case Difficulty.Easy: return 190;
+			case Difficulty.Normal: return 72; 
+			case Difficulty.Hard: return 26; 
+		}
+	};
 
 	let getEnemy = function (
 			xMibi: number,
@@ -10,12 +19,12 @@ let Enemy_Flyamanita: { getEnemy: ({ yInitialMibi, yAngleScaled, enemyId }: { yI
 			yInitialMibi: number,
 			yAngleScaled: number,
 			hp: number,
-			attackCooldown: number,
+			attackCooldown: number | null,
 			frameCounter: number,
 			screenWipeCountdown: number | null,
 			enemyId: number): IEnemy {
 
-		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, soundOutput }) {
+		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, difficulty, playerState, tilemap, soundOutput }) {
 
 			let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
 
@@ -32,7 +41,7 @@ let Enemy_Flyamanita: { getEnemy: ({ yInitialMibi, yAngleScaled, enemyId }: { yI
 				let explode = Enemy_Background_Explode.getEnemy({
 					xMibi: xMibi,
 					yMibi: yMibi,
-					displayAngleScaled: rng.nextInt(360 * 128),
+					displayAngleScaled: rng.nextInt(4) * (90 * 128),
 					scalingFactorScaled: 128 * 3,
 					renderOnTop: false,
 					enemyId: nextEnemyId++
@@ -44,48 +53,42 @@ let Enemy_Flyamanita: { getEnemy: ({ yInitialMibi, yAngleScaled, enemyId }: { yI
 				};
 			}
 
-			xMibi -= 1000;
+			xMibi += tilemap.getXVelocityForEnemiesInMibipixelsPerFrame();
 
-			yAngleScaled += 128 * 3;
+			yAngleScaled += 192;
 			if (yAngleScaled >= 360 * 128)
 				yAngleScaled -= 360 * 128;
 
-			yMibi = yInitialMibi + Math.floor(100 * DTMath.sineScaled(yAngleScaled));
+			yMibi = yInitialMibi + Math.floor(90 * DTMath.sineScaled(yAngleScaled));
 
 			let enemies = [thisObj];
 
+			if (attackCooldown === null)
+				attackCooldown = rng.nextInt(getAttackCooldown(difficulty));
+
 			attackCooldown--;
 			if (attackCooldown <= 0 && screenWipeCountdown === null) {
-				attackCooldown = ATTACK_COOLDOWN;
+				attackCooldown = getAttackCooldown(difficulty);
 
 				soundOutput.playSound(GameSound.EnemyShoot, 100);
 
-				let increment: number;
+				let freezewaveSpeed;
 
 				switch (difficulty) {
-					case Difficulty.Easy:
-						increment = 120 * 128;
-						break;
-					case Difficulty.Normal:
-						increment = 60 * 128;
-						break;
-					case Difficulty.Hard:
-						increment = 30 * 128;
-						break;
+					case Difficulty.Easy: freezewaveSpeed = 3; break;
+					case Difficulty.Normal: freezewaveSpeed = 4; break;
+					case Difficulty.Hard: freezewaveSpeed = 4; break;
 				}
 
-				for (let i = rng.nextInt(increment); i < 360 * 128; i += increment) {
-					enemies.push(Enemy_Bullet_Noone.getEnemy({
-						xMibi: xMibi,
-						yMibi: yMibi,
-						directionScaled: i,
-						rotatesClockwise: rng.nextBool(),
-						displayAngleScaled: rng.nextInt(360 * 128),
-						gameImage: GameImage.Noone,
-						difficulty: difficulty,
-						enemyId: nextEnemyId++
-					}));
-				}
+				enemies.push(Enemy_Bullet_Freezewave.getEnemy({
+					xMibi: xMibi,
+					yMibi: yMibi,
+					playerState: playerState,
+					speed: freezewaveSpeed,
+					scalingFactorScaled: 192,
+					hasCollisionWithTilemap: true,
+					enemyId: nextEnemyId++
+				}));
 			}
 
 			if (screenWipeCountdown !== null)
@@ -102,10 +105,10 @@ let Enemy_Flyamanita: { getEnemy: ({ yInitialMibi, yAngleScaled, enemyId }: { yI
 
 		let getHitboxes = function () {
 			return [{
-				xMibi: xMibi - 3 * 8 * 1024,
-				yMibi: yMibi - 3 * 8 * 1024,
-				widthMibi: 3 * 16 * 1024,
-				heightMibi: 3 * 16 * 1024
+				xMibi: xMibi - 3 * 7 * 1024,
+				yMibi: yMibi - 3 * 7 * 1024,
+				widthMibi: 3 * 14 * 1024,
+				heightMibi: 3 * 14 * 1024
 			}];
 		};
 
@@ -119,7 +122,7 @@ let Enemy_Flyamanita: { getEnemy: ({ yInitialMibi, yAngleScaled, enemyId }: { yI
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
-			let spriteNum = Math.floor(frameCounter / 10) % 4;
+			let spriteNum = Math.floor(frameCounter / 20) % 4;
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.FlyAmanita,
@@ -161,16 +164,20 @@ let Enemy_Flyamanita: { getEnemy: ({ yInitialMibi, yAngleScaled, enemyId }: { yI
 		};
 	};
 
-	Enemy_Flyamanita.getEnemy = function ({ yInitialMibi, yAngleScaled, enemyId }: { yInitialMibi: number, yAngleScaled: number, enemyId: number }): IEnemy {
+	Enemy_Flyamanita.getEnemy = function ({ xMibi, yInitialMibi, yAngleScaled, difficulty, enemyId }: { xMibi: number, yInitialMibi: number, yAngleScaled: number, difficulty: Difficulty, enemyId: number }): IEnemy {
 
 		yAngleScaled = DTMath.normalizeDegreesScaled(yAngleScaled);
 
-		let hp = 50;
+		let hp: number;
 
-		let xMibi = (GlobalConstants.WINDOW_WIDTH + 50) << 10;
+		switch (difficulty) {
+			case Difficulty.Easy: hp = 42; break;
+			case Difficulty.Normal: hp = 46; break;
+			case Difficulty.Hard: hp = 50; break;
+		}
 
 		let yMibi = yInitialMibi + Math.floor(100 * DTMath.sineScaled(yAngleScaled));
 
-		return getEnemy(xMibi, yMibi, yInitialMibi, yAngleScaled, hp, ATTACK_COOLDOWN, 0, null, enemyId);
+		return getEnemy(xMibi, yMibi, yInitialMibi, yAngleScaled, hp, null, 0, null, enemyId);
 	};
 })());

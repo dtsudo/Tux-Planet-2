@@ -4,12 +4,15 @@ type GameState = {
 	playerBulletState: PlayerBulletState,
 	enemies: IEnemy[],
 	nextEnemyId: number,
+	tilemap: Tilemap,
 	frameCount: number,
 	rngSeed: number,
 	cutscene: ICutscene | null,
 	bossHealthDisplay: BossHealthDisplay,
+	level: Level,
 	difficulty: Difficulty,
-	background: IBackground
+	background: IBackground,
+	debug_isInvulnerable: boolean
 }
 
 let GameStateUtil = {
@@ -42,28 +45,31 @@ let GameStateUtil = {
 			playerBulletState: playerBulletStateSnapshot,
 			enemies: enemiesSnapshot,
 			nextEnemyId: gameState.nextEnemyId,
+			tilemap: gameState.tilemap.getSnapshot(gameState.tilemap),
 			frameCount: gameState.frameCount,
 			rngSeed: gameState.rngSeed,
+			level: gameState.level,
 			difficulty: gameState.difficulty,
 			cutscene: gameState.cutscene !== null ? gameState.cutscene.getSnapshot(gameState.cutscene) : null,
 			bossHealthDisplay: gameState.bossHealthDisplay.getSnapshot(gameState.bossHealthDisplay),
-			background: gameState.background.getSnapshot(gameState.background)
+			background: gameState.background.getSnapshot(gameState.background),
+			debug_isInvulnerable: gameState.debug_isInvulnerable
 		};
 	},
 
-	getInitialGameState: function (levelNum: number, difficulty: Difficulty): GameState {
+	getInitialGameState: function (level: Level, difficulty: Difficulty, displayProcessing: IDisplayProcessing): GameState {
 
 		let enemy: IEnemy;
 		let background: IBackground;
 		let nextEnemyId = 1;
+		let tilemap: Tilemap;
 
-		switch (levelNum) {
-			case 1:
+		switch (level) {
+			case Level.Level1:
 				enemy = Enemy_Level1.getEnemy({ enemyId: nextEnemyId++ });
 				background = Background_Ocean.getBackground();
+				tilemap = TilemapUtil.getTilemap(MapData.Level1, TilemapLevelInfo_Level1.getLevel1TilemapLevelInfo(), displayProcessing);
 				break;
-			default:
-				throw new Error("Unrecognized levelNum: " + levelNum);
 		}
 
 		return {
@@ -79,12 +85,15 @@ let GameStateUtil = {
 			},
 			enemies: [enemy],
 			nextEnemyId: nextEnemyId,
+			tilemap: tilemap,
 			frameCount: 0,
 			rngSeed: 0,
+			level: level,
 			difficulty: difficulty,
 			cutscene: null,
 			bossHealthDisplay: BossHealthDisplayUtil.getDisplay(),
-			background: background
+			background: background,
+			debug_isInvulnerable: false
 		};
 	}
 };

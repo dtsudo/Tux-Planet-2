@@ -2,7 +2,7 @@ let Enemy_Bullet_Noone = {};
 ((function () {
     let getEnemy = function (xMibi, yMibi, xSpeed, ySpeed, rotatesClockwise, displayAngleScaled, screenWipeCountdown, gameImage, enemyId) {
         let thisEnemyArray = null;
-        let processFrame = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId }) {
+        let processFrame = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, tilemap }) {
             xMibi += xSpeed;
             yMibi += ySpeed;
             let x = xMibi >> 10;
@@ -13,13 +13,21 @@ let Enemy_Bullet_Noone = {};
                     nextEnemyId: nextEnemyId,
                     newRngSeed: rngSeed
                 };
+            if (tilemap.isSolid(xMibi, yMibi)) {
+                let poof = Enemy_Background_Poof.getEnemy({ xMibi: xMibi, yMibi: yMibi, scalingFactorScaled: 3 * 128, enemyId: nextEnemyId++ });
+                return {
+                    enemies: [poof],
+                    nextEnemyId: nextEnemyId,
+                    newRngSeed: rngSeed
+                };
+            }
             if (rotatesClockwise) {
-                displayAngleScaled += 3 * 128;
+                displayAngleScaled += 192;
                 if (displayAngleScaled >= 360 * 128)
                     displayAngleScaled -= 360 * 128;
             }
             else {
-                displayAngleScaled -= 3 * 128;
+                displayAngleScaled -= 192;
                 if (displayAngleScaled < 0)
                     displayAngleScaled += 360 * 128;
             }
@@ -77,22 +85,22 @@ let Enemy_Bullet_Noone = {};
             render
         };
     };
-    Enemy_Bullet_Noone.getEnemy = function ({ xMibi, yMibi, directionScaled, rotatesClockwise, displayAngleScaled, gameImage, difficulty, enemyId }) {
+    Enemy_Bullet_Noone.getEnemy = function ({ xMibi, yMibi, directionScaled, xVelocityOffsetInMibipixelsPerFrame, rotatesClockwise, displayAngleScaled, gameImage, difficulty, enemyId }) {
         displayAngleScaled = DTMath.normalizeDegreesScaled(displayAngleScaled);
-        let speed;
+        let doubledSpeed;
         switch (difficulty) {
             case 0 /* Difficulty.Easy */:
-                speed = 3;
+                doubledSpeed = 3;
                 break;
             case 1 /* Difficulty.Normal */:
-                speed = 4;
+                doubledSpeed = 4;
                 break;
             case 2 /* Difficulty.Hard */:
-                speed = 5;
+                doubledSpeed = 5;
                 break;
         }
-        let xSpeed = DTMath.cosineScaled(directionScaled) * speed;
-        let ySpeed = DTMath.sineScaled(directionScaled) * speed;
+        let xSpeed = Math.floor(DTMath.cosineScaled(directionScaled) * doubledSpeed / 2) + xVelocityOffsetInMibipixelsPerFrame;
+        let ySpeed = Math.floor(DTMath.sineScaled(directionScaled) * doubledSpeed / 2);
         return getEnemy(xMibi, yMibi, xSpeed, ySpeed, rotatesClockwise, displayAngleScaled, null, gameImage, enemyId);
     };
 })());

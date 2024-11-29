@@ -24,7 +24,7 @@ let EnemyCollision = {
 
 				if (hasCollided) {
 					let shouldKillPlayer = enemy.onCollideWithPlayer(gameState.playerState);
-					if (shouldKillPlayer)
+					if (shouldKillPlayer && !gameState.debug_isInvulnerable)
 						gameState.playerState.isDeadFrameCount = 0;
 				}
 			}

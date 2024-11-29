@@ -17,16 +17,16 @@ let Enemy_FlyamanitaBig: { getEnemy: ({ yMibi, enemyId }: { yMibi: number, enemy
 
 			let ATTACK_COOLDOWN: number;
 			switch (difficulty) {
-				case Difficulty.Easy: ATTACK_COOLDOWN = 50; break;
-				case Difficulty.Normal: ATTACK_COOLDOWN = 17; break;
-				case Difficulty.Hard: ATTACK_COOLDOWN = 11; break;
+				case Difficulty.Easy: ATTACK_COOLDOWN = 100; break;
+				case Difficulty.Normal: ATTACK_COOLDOWN = 34; break;
+				case Difficulty.Hard: ATTACK_COOLDOWN = 22; break;
 			}
 
 			let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
 
 			xMibi -= xSpeed;
 
-			xSpeed -= 40;
+			xSpeed -= 10;
 
 			if (xSpeed <= 0)
 				xSpeed = 0;
@@ -36,7 +36,7 @@ let Enemy_FlyamanitaBig: { getEnemy: ({ yMibi, enemyId }: { yMibi: number, enemy
 					attackCooldown = rng.nextInt(ATTACK_COOLDOWN);
 			}
 
-			if (hp <= 0 || frameCounter >= 600 || screenWipeCountdown !== null && screenWipeCountdown <= 0) {
+			if (hp <= 0 || frameCounter >= 1200 || screenWipeCountdown !== null && screenWipeCountdown <= 0) {
 				let explode = Enemy_Background_Explode.getEnemy({
 					xMibi: xMibi,
 					yMibi: yMibi,
@@ -61,11 +61,21 @@ let Enemy_FlyamanitaBig: { getEnemy: ({ yMibi, enemyId }: { yMibi: number, enemy
 
 					soundOutput.playSound(GameSound.EnemyShoot, 100);
 
+					let freezewaveSpeed;
+
+					switch (difficulty) {
+						case Difficulty.Easy: freezewaveSpeed = 5; break;
+						case Difficulty.Normal: freezewaveSpeed = 10; break;
+						case Difficulty.Hard: freezewaveSpeed = 15; break;
+					}
+
 					enemies.push(Enemy_Bullet_Freezewave.getEnemy({
 						xMibi: xMibi,
 						yMibi: yMibi,
 						playerState: playerState,
-						difficulty: difficulty,
+						speed: freezewaveSpeed,
+						scalingFactorScaled: 3 * 128,
+						hasCollisionWithTilemap: true,
 						enemyId: nextEnemyId++
 					}));
 				}
@@ -104,7 +114,7 @@ let Enemy_FlyamanitaBig: { getEnemy: ({ yMibi, enemyId }: { yMibi: number, enemy
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
-			let spriteNum = Math.floor(frameCounter / 10) % 4;
+			let spriteNum = Math.floor(frameCounter / 20) % 4;
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.FlyAmanita,
@@ -150,7 +160,7 @@ let Enemy_FlyamanitaBig: { getEnemy: ({ yMibi, enemyId }: { yMibi: number, enemy
 
 		let hp = 250;
 
-		let xSpeed = 5000;
+		let xSpeed = 2500;
 
 		return getEnemy((GlobalConstants.WINDOW_WIDTH + 100) << 10, yMibi, xSpeed, hp, 0, 0, null, enemyId);
 	};

@@ -1,8 +1,13 @@
 
 let GameStateProcessing = {
-	SCREEN_WIPE_MAX_COUNTDOWN: 30,
+	SCREEN_WIPE_MAX_COUNTDOWN: 60,
 
 	processFrame: function (gameState: GameState, frameInput: FrameInput, soundOutput: ISoundOutput, musicOutput: IMusicOutput) {
+
+		// The tilemap should be processed before the player or enemies.
+		// (Otherwise, the player or enemy may end up being stuck inside solids
+		// if the player/enemy is adjacent to a solid and the tilemap moves.)
+		gameState.tilemap.processFrame();
 
 		let enemyMapping: { [index: number]: IEnemy } = {};
 		for (let enemy of gameState.enemies)
@@ -17,6 +22,9 @@ let GameStateProcessing = {
 			if (cutsceneResult.shouldCreateAutoSavestate)
 				shouldCreateAutoSavestate = true;
 		}
+
+		if (frameInput.debug_toggleInvulnerability)
+			gameState.debug_isInvulnerable = !gameState.debug_isInvulnerable;
 
 		PlayerStateProcessing.processFrame(gameState, frameInput, soundOutput);
 

@@ -3,43 +3,32 @@ let Background_Ocean: { getBackground: () => IBackground } = {} as any;
 
 ((function () {
 
-	let getBackground: (xOffset: number, bossFrameCounter: number | null) => IBackground;
-	getBackground = function (xOffset: number, bossFrameCounter: number | null): IBackground {
+	let getBackground = function (xOffsetMibi: number, bossFrameCounter: number | null): IBackground {
 
 		let getSnapshot = function (thisObj: IBackground): IBackground {
-			return getBackground(xOffset, bossFrameCounter);
+			return getBackground(xOffsetMibi, bossFrameCounter);
 		};
 
 		let processFrame = function () {
-			xOffset -= 2;
-			if (xOffset <= -480 * 3)
-				xOffset += 480 * 3;
+			xOffsetMibi -= 256;
+			if (xOffsetMibi <= -480 * 3 * 1024)
+				xOffsetMibi += 480 * 3 * 1024;
 
-			if (bossFrameCounter !== null && bossFrameCounter < 100)
+			if (bossFrameCounter !== null && bossFrameCounter < 200)
 				bossFrameCounter++;
 			
 			if (bossFrameCounter !== null) {
-				xOffset -= 1;
-				if (bossFrameCounter > 10)
-					xOffset -= 1;
-				if (bossFrameCounter > 20)
-					xOffset -= 1;
-				if (bossFrameCounter > 30)
-					xOffset -= 1;
+				xOffsetMibi -= 256;
 				if (bossFrameCounter > 40)
-					xOffset -= 1;
-				if (bossFrameCounter > 50)
-					xOffset -= 1;
-				if (bossFrameCounter > 60)
-					xOffset -= 1;
-				if (bossFrameCounter > 70)
-					xOffset -= 1;
+					xOffsetMibi -= 256;
 				if (bossFrameCounter > 80)
-					xOffset -= 1;
-				if (bossFrameCounter > 90)
-					xOffset -= 1;
-				if (xOffset <= -480 * 3)
-					xOffset += 480 * 3;
+					xOffsetMibi -= 256;
+				if (bossFrameCounter > 120)
+					xOffsetMibi -= 256;
+				if (bossFrameCounter > 160)
+					xOffsetMibi -= 256;
+				if (xOffsetMibi <= -480 * 3 * 1024)
+					xOffsetMibi += 480 * 3 * 1024;
 			}
 		};
 
@@ -54,7 +43,7 @@ let Background_Ocean: { getBackground: () => IBackground } = {} as any;
 				0,
 				480,
 				240,
-				xOffset,
+				xOffsetMibi >> 10,
 				0,
 				0,
 				128 * 3);
@@ -65,13 +54,13 @@ let Background_Ocean: { getBackground: () => IBackground } = {} as any;
 				0,
 				480,
 				240,
-				xOffset + 480 * 3,
+				(xOffsetMibi >> 10) + 480 * 3,
 				0,
 				0,
 				128 * 3);
 
 			if (bossFrameCounter !== null) {
-				let alpha = bossFrameCounter * 5;
+				let alpha = Math.floor(bossFrameCounter * 5 / 2);
 				if (alpha > 200)
 					alpha = 200;
 				displayOutput.drawRectangle(

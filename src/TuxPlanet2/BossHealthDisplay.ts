@@ -26,12 +26,12 @@ let BossHealthDisplayUtil: { getDisplay: () => BossHealthDisplay } = {} as any;
 					return;
 				}
 
-				if (currentHealthPercent <= 5) {
+				if (currentHealthPercent <= 3) {
 					currentHealthPercent = 0;
 					return;
 				}
 
-				currentHealthPercent -= 5;
+				currentHealthPercent -= 3;
 				return;
 			}
 
@@ -41,12 +41,12 @@ let BossHealthDisplayUtil: { getDisplay: () => BossHealthDisplay } = {} as any;
 			}
 
 			if (desiredHealthPercent < currentHealthPercent) {
-				if (currentHealthPercent - desiredHealthPercent < 5) {
+				if (currentHealthPercent - desiredHealthPercent < 3) {
 					currentHealthPercent = desiredHealthPercent;
 					return;
 				}
 
-				currentHealthPercent -= 5;
+				currentHealthPercent -= 3;
 				return;
 			}
 
@@ -54,17 +54,17 @@ let BossHealthDisplayUtil: { getDisplay: () => BossHealthDisplay } = {} as any;
 				let delta = desiredHealthPercent - currentHealthPercent;
 
 				if (delta > 50) {
-					currentHealthPercent += 20;
-					return;
-				}
-
-				if (delta > 20) {
 					currentHealthPercent += 10;
 					return;
 				}
 
-				if (delta > 5) {
+				if (delta > 20) {
 					currentHealthPercent += 5;
+					return;
+				}
+
+				if (delta > 5) {
+					currentHealthPercent += 3;
 					return;
 				}
 

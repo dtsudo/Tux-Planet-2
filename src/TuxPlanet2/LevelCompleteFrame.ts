@@ -42,8 +42,8 @@ LevelCompleteFrame.getFrame = function (globalState: GlobalState, sessionState: 
 			soundOutput.playSound(GameSound.Click, 100);
 
 			switch (option) {
-				case 1: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, difficulty);
-				case 2: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(1, difficulty));
+				case 1: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, difficulty, displayProcessing);
+				case 2: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(Level.Level1, difficulty, displayProcessing));
 				case 3: return TitleScreenFrame.getFrame(globalState, sessionState);
 				default: throw new Error("Unrecognized option");
 			}

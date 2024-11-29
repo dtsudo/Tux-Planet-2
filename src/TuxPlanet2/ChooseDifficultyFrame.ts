@@ -54,7 +54,7 @@ ChooseDifficultyFrame.getFrame = function (globalState: GlobalState, sessionStat
 				default: throw new Error("Unrecognized difficulty");
 			}
 
-			let gameState = GameStateUtil.getInitialGameState(1, gameDifficulty);
+			let gameState = GameStateUtil.getInitialGameState(Level.Level1, gameDifficulty, displayProcessing);
 
 			return GameFrame.getFrame(globalState, sessionState, gameState);
 		}

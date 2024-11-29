@@ -22,8 +22,16 @@ Image files were created by:
 * Kelvin Shadewing
 * Kenney
 * KnoblePersona
+* Lanea Zimmerman, William Thompson
+* Nemisys
 
 See the `built/Data/Images/` folder for more details -- a `license.txt` file is located in each subfolder.
+
+##### Maps
+
+Map files were modified from SuperTux Advance levels.
+
+See the `built/Data/Maps/license.txt` file for more details.
 
 ##### Sound effects
 

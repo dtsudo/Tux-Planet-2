@@ -11,6 +11,8 @@ const enum GameImage {
 	KonqiAir,
 	TinyFlame,
 	FlyAmanita,
+	Smartcap,
+	Smartcap_Mirrored,
 	Ocean,
 	Noone,
 	NooneIce,
@@ -25,7 +27,13 @@ const enum GameImage {
 	Skull,
 	BossHealth,
 	ExplodeI,
-	BouncySnow
+	BouncySnow,
+	BouncySnow_Mirrored,
+	TsSnow,
+	SignPost,
+	Igloo,
+	IceCaveTiles,
+	Treetops
 }
 
 let GameImageUtil = {
@@ -42,6 +50,8 @@ let GameImageUtil = {
 			GameImage.KonqiAir,
 			GameImage.TinyFlame,
 			GameImage.FlyAmanita,
+			GameImage.Smartcap,
+			GameImage.Smartcap_Mirrored,
 			GameImage.Ocean,
 			GameImage.Noone,
 			GameImage.NooneIce,
@@ -56,7 +66,13 @@ let GameImageUtil = {
 			GameImage.Skull,
 			GameImage.BossHealth,
 			GameImage.ExplodeI,
-			GameImage.BouncySnow
+			GameImage.BouncySnow,
+			GameImage.BouncySnow_Mirrored,
+			GameImage.TsSnow,
+			GameImage.SignPost,
+			GameImage.Igloo,
+			GameImage.IceCaveTiles,
+			GameImage.Treetops
 		];
 	},
 	
@@ -73,6 +89,8 @@ let GameImageUtil = {
 			case GameImage.KonqiAir: return "KelvinShadewing/konqiair.png";
 			case GameImage.TinyFlame: return "KelvinShadewing/tinyflame.png";
 			case GameImage.FlyAmanita: return "KelvinShadewing/flyamanita.png";
+			case GameImage.Smartcap: return "KelvinShadewing/smartcap.png";
+			case GameImage.Smartcap_Mirrored: return "KelvinShadewing/smartcap_mirrored.png";
 			case GameImage.Ocean: return "KnoblePersona/ocean.png";
 			case GameImage.Noone: return "KelvinShadewing/noone.png";
 			case GameImage.NooneIce: return "KelvinShadewing/noone_ice.png";
@@ -88,6 +106,12 @@ let GameImageUtil = {
 			case GameImage.BossHealth: return "KelvinShadewing/boss-health.png";
 			case GameImage.ExplodeI: return "KelvinShadewing/explodeI.png";
 			case GameImage.BouncySnow: return "KelvinShadewing/bouncysnow.png";
+			case GameImage.BouncySnow_Mirrored: return "KelvinShadewing/bouncysnow_mirrored.png";
+			case GameImage.TsSnow: return "KelvinShadewing/tssnow.png";
+			case GameImage.SignPost: return "Nemisys/signpost.png";
+			case GameImage.Igloo: return "KelvinShadewing/igloo.png";
+			case GameImage.IceCaveTiles: return "KelvinShadewing/icecavetiles.png";
+			case GameImage.Treetops: return "Treetops/treetops.png";
 		}
 	}
 };

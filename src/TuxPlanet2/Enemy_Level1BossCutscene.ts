@@ -43,7 +43,7 @@ let Enemy_Level1BossCutscene: { getEnemy: ({ enemyId }: { enemyId: number }) => 
 
 			xMibi -= xSpeed;
 
-			xSpeed -= 40;
+			xSpeed -= 10;
 			if (xSpeed < 0)
 				xSpeed = 0;
 
@@ -84,7 +84,7 @@ let Enemy_Level1BossCutscene: { getEnemy: ({ enemyId }: { enemyId: number }) => 
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
-			let spriteNum = Math.floor(frameCounter / 10) % 4;
+			let spriteNum = Math.floor(frameCounter / 20) % 4;
 
 			displayOutput.drawImageRotatedClockwise(
 				GameImage.OwlBrown,
@@ -128,6 +128,6 @@ let Enemy_Level1BossCutscene: { getEnemy: ({ enemyId }: { enemyId: number }) => 
 
 		let xMibi = (GlobalConstants.WINDOW_WIDTH + 100) << 10;
 
-		return getEnemy(xMibi, 350 * 1024, 5000, 0, false, false, enemyId);
+		return getEnemy(xMibi, 350 * 1024, 2500, 0, false, false, enemyId);
 	};
 })());

@@ -24,25 +24,28 @@ let GameStateUtil = {
             playerBulletState: playerBulletStateSnapshot,
             enemies: enemiesSnapshot,
             nextEnemyId: gameState.nextEnemyId,
+            tilemap: gameState.tilemap.getSnapshot(gameState.tilemap),
             frameCount: gameState.frameCount,
             rngSeed: gameState.rngSeed,
+            level: gameState.level,
             difficulty: gameState.difficulty,
             cutscene: gameState.cutscene !== null ? gameState.cutscene.getSnapshot(gameState.cutscene) : null,
             bossHealthDisplay: gameState.bossHealthDisplay.getSnapshot(gameState.bossHealthDisplay),
-            background: gameState.background.getSnapshot(gameState.background)
+            background: gameState.background.getSnapshot(gameState.background),
+            debug_isInvulnerable: gameState.debug_isInvulnerable
         };
     },
-    getInitialGameState: function (levelNum, difficulty) {
+    getInitialGameState: function (level, difficulty, displayProcessing) {
         let enemy;
         let background;
         let nextEnemyId = 1;
-        switch (levelNum) {
-            case 1:
+        let tilemap;
+        switch (level) {
+            case 0 /* Level.Level1 */:
                 enemy = Enemy_Level1.getEnemy({ enemyId: nextEnemyId++ });
                 background = Background_Ocean.getBackground();
+                tilemap = TilemapUtil.getTilemap(MapData.Level1, TilemapLevelInfo_Level1.getLevel1TilemapLevelInfo(), displayProcessing);
                 break;
-            default:
-                throw new Error("Unrecognized levelNum: " + levelNum);
         }
         return {
             playerState: {
@@ -57,12 +60,15 @@ let GameStateUtil = {
             },
             enemies: [enemy],
             nextEnemyId: nextEnemyId,
+            tilemap: tilemap,
             frameCount: 0,
             rngSeed: 0,
+            level: level,
             difficulty: difficulty,
             cutscene: null,
             bossHealthDisplay: BossHealthDisplayUtil.getDisplay(),
-            background: background
+            background: background,
+            debug_isInvulnerable: false
         };
     }
 };

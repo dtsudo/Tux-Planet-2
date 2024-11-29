@@ -19,6 +19,7 @@ let EnemyProcessing = {
                     nextEnemyId: gameState.nextEnemyId,
                     difficulty: gameState.difficulty,
                     playerState: gameState.playerState,
+                    tilemap: gameState.tilemap,
                     soundOutput: soundOutput
                 });
                 gameState.nextEnemyId = result.nextEnemyId;

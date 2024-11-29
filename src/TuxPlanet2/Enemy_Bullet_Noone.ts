@@ -1,5 +1,5 @@
 
-let Enemy_Bullet_Noone: { getEnemy: ({ xMibi, yMibi, directionScaled, rotatesClockwise, displayAngleScaled, gameImage, difficulty, enemyId }: { xMibi: number, yMibi: number, directionScaled: number, rotatesClockwise: boolean, displayAngleScaled: number, gameImage: GameImage, difficulty: Difficulty, enemyId: number }) => IEnemy } = {} as any;
+let Enemy_Bullet_Noone: { getEnemy: ({ xMibi, yMibi, directionScaled, xVelocityOffsetInMibipixelsPerFrame, rotatesClockwise, displayAngleScaled, gameImage, difficulty, enemyId }: { xMibi: number, yMibi: number, directionScaled: number, xVelocityOffsetInMibipixelsPerFrame: number, rotatesClockwise: boolean, displayAngleScaled: number, gameImage: GameImage, difficulty: Difficulty, enemyId: number }) => IEnemy } = {} as any;
 
 ((function () {
 	let getEnemy = function (
@@ -15,7 +15,7 @@ let Enemy_Bullet_Noone: { getEnemy: ({ xMibi, yMibi, directionScaled, rotatesClo
 
 		let thisEnemyArray: IEnemy[] | null = null;
 
-		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId }) {
+		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, tilemap }) {
 
 			xMibi += xSpeed;
 			yMibi += ySpeed;
@@ -30,12 +30,21 @@ let Enemy_Bullet_Noone: { getEnemy: ({ xMibi, yMibi, directionScaled, rotatesClo
 					newRngSeed: rngSeed
 				};
 
+			if (tilemap.isSolid(xMibi, yMibi)) {
+				let poof = Enemy_Background_Poof.getEnemy({ xMibi: xMibi, yMibi: yMibi, scalingFactorScaled: 3 * 128, enemyId: nextEnemyId++ });
+				return {
+					enemies: [poof],
+					nextEnemyId: nextEnemyId,
+					newRngSeed: rngSeed
+				};
+			}
+
 			if (rotatesClockwise) {
-				displayAngleScaled += 3 * 128;
+				displayAngleScaled += 192;
 				if (displayAngleScaled >= 360 * 128)
 					displayAngleScaled -= 360 * 128;
 			} else {
-				displayAngleScaled -= 3 * 128;
+				displayAngleScaled -= 192;
 				if (displayAngleScaled < 0)
 					displayAngleScaled += 360 * 128;
 			}
@@ -113,20 +122,20 @@ let Enemy_Bullet_Noone: { getEnemy: ({ xMibi, yMibi, directionScaled, rotatesClo
 		};
 	};
 
-	Enemy_Bullet_Noone.getEnemy = function ({ xMibi, yMibi, directionScaled, rotatesClockwise, displayAngleScaled, gameImage, difficulty, enemyId }: { xMibi: number, yMibi: number, directionScaled: number, rotatesClockwise: boolean, displayAngleScaled: number, gameImage: GameImage, difficulty: Difficulty, enemyId: number }): IEnemy {
+	Enemy_Bullet_Noone.getEnemy = function ({ xMibi, yMibi, directionScaled, xVelocityOffsetInMibipixelsPerFrame, rotatesClockwise, displayAngleScaled, gameImage, difficulty, enemyId }: { xMibi: number, yMibi: number, directionScaled: number, xVelocityOffsetInMibipixelsPerFrame: number, rotatesClockwise: boolean, displayAngleScaled: number, gameImage: GameImage, difficulty: Difficulty, enemyId: number }): IEnemy {
 
 		displayAngleScaled = DTMath.normalizeDegreesScaled(displayAngleScaled);
 
-		let speed: number;
+		let doubledSpeed: number;
 
 		switch (difficulty) {
-			case Difficulty.Easy: speed = 3; break;
-			case Difficulty.Normal: speed = 4; break;
-			case Difficulty.Hard: speed = 5; break;
+			case Difficulty.Easy: doubledSpeed = 3; break;
+			case Difficulty.Normal: doubledSpeed = 4; break;
+			case Difficulty.Hard: doubledSpeed = 5; break;
 		}
 
-		let xSpeed = DTMath.cosineScaled(directionScaled) * speed;
-		let ySpeed = DTMath.sineScaled(directionScaled) * speed;
+		let xSpeed = Math.floor(DTMath.cosineScaled(directionScaled) * doubledSpeed / 2) + xVelocityOffsetInMibipixelsPerFrame;
+		let ySpeed = Math.floor(DTMath.sineScaled(directionScaled) * doubledSpeed / 2);
 
 		return getEnemy(xMibi, yMibi, xSpeed, ySpeed, rotatesClockwise, displayAngleScaled, null, gameImage, enemyId);
 	};

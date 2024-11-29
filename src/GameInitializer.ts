@@ -69,14 +69,8 @@ let GameInitializer = ((function () {
 	
 		if (buildType === BuildType.Electron)
 			addResizingCanvasLogic(canvasNode);
-		
-		let globalState = {
-			buildType: buildType,
-			debugMode: debugMode,
-			saveAndLoadData: SaveAndLoadDataUtil.getSaveAndLoadData()
-		};
-		
-		gameFrame = GameEntryFrame.getFirstFrame(globalState);
+				
+		gameFrame = GameEntryFrame.getFirstFrame(buildType, debugMode);
 		gameKeyboard = GameKeyboard.getKeyboard(buildType === BuildType.WebEmbedded || buildType === BuildType.Electron);
 		gameMouse = GameMouse.getMouse();
 		

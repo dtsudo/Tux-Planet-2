@@ -48,7 +48,7 @@ let Enemy_Bullet_Strawberry = {};
             return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, screenWipeCountdown, enemyId);
         };
         let render = function (displayOutput) {
-            displayOutput.drawImageRotatedClockwise(15 /* GameImage.Strawberry */, 0, 0, 10, 12, (xMibi >> 10) - 5 * 3, (yMibi >> 10) - 6 * 3, displayAngleScaled, 3 * 128);
+            displayOutput.drawImageRotatedClockwise(17 /* GameImage.Strawberry */, 0, 0, 10, 12, (xMibi >> 10) - 5 * 3, (yMibi >> 10) - 6 * 3, displayAngleScaled, 3 * 128);
         };
         let onScreenWipe = function (countdown) {
             screenWipeCountdown = countdown;
@@ -68,7 +68,7 @@ let Enemy_Bullet_Strawberry = {};
         };
     };
     Enemy_Bullet_Strawberry.getEnemy = function ({ xMibi, yMibi, angleScaled, enemyId }) {
-        let speed = 4;
+        let speed = 2;
         let xSpeed = speed * DTMath.cosineScaled(angleScaled);
         let ySpeed = speed * DTMath.sineScaled(angleScaled);
         let displayAngleScaled = -angleScaled - 90 * 128;
