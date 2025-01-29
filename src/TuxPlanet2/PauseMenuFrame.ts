@@ -1,14 +1,14 @@
 
-let PauseMenuFrame: { getFrame: (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, difficulty: Difficulty) => IFrame } = {} as any;
+let PauseMenuFrame: { getFrame: (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, level: Level, difficulty: Difficulty) => IFrame } = {} as any;
 
-PauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, difficulty: Difficulty): IFrame {
+PauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, level: Level, difficulty: Difficulty): IFrame {
 
 	let volumePicker: SoundAndMusicVolumePicker | null = null;
 
 	/*
 		1 = Continue
 		2 = Restart level
-		3 = Return to title screen
+		3 = Return to overworld
 	*/
 	let option: number = 1;
 
@@ -50,8 +50,8 @@ PauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState: Sess
 
 			switch (option) {
 				case 1: return underlyingFrame;
-				case 2: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(Level.Level1, difficulty, displayProcessing));
-				case 3: return TitleScreenFrame.getFrame(globalState, sessionState);
+				case 2: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(level, difficulty, displayProcessing));
+				case 3: return OverworldFrame.getFrame(globalState, sessionState);
 				default: throw new Error("Unrecognized option");
 			}
 		}
@@ -92,7 +92,7 @@ PauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState: Sess
 		displayOutput.drawText(
 			365,
 			300,
-			"Return to title screen",
+			"Quit level and return to map",
 			GameFont.SimpleFont,
 			24,
 			white);
@@ -115,7 +115,7 @@ PauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState: Sess
 		displayOutput.drawRectangle(
 			362,
 			y,
-			275,
+			350,
 			30,
 			white,
 			false);

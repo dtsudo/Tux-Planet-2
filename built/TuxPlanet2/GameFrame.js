@@ -12,12 +12,14 @@ GameFrame.getFrame = function (globalState, sessionState, gameState) {
     let skipFrameCount = 0;
     let frameInputHistory = null;
     let renderKonqiHitbox = false;
+    let debug_renderDamageboxes = false;
+    let debug_renderHitboxes = false;
     let previousFrameInput = FrameInputUtil.getEmptyFrameInput();
     let suggestedFrameInput = FrameInputUtil.getEmptyFrameInput();
     let endLevelCounter = null;
     let getNextFrame = function ({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame }) {
         if (keyboardInput.isPressed(45 /* Key.Esc */) && !previousKeyboardInput.isPressed(45 /* Key.Esc */))
-            return PauseMenuFrame.getFrame(globalState, sessionState, thisFrame, gameState.difficulty);
+            return PauseMenuFrame.getFrame(globalState, sessionState, thisFrame, gameState.level, gameState.difficulty);
         if (endLevelCounter !== null)
             endLevelCounter++;
         let frame = getNextFrameHelper({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame });
@@ -26,9 +28,22 @@ GameFrame.getFrame = function (globalState, sessionState, gameState) {
         if (globalState.debugMode) {
             if (keyboardInput.isPressed(26 /* Key.Zero */) && !previousKeyboardInput.isPressed(26 /* Key.Zero */) && endLevelCounter === null)
                 endLevelCounter = 0;
+            if (keyboardInput.isPressed(3 /* Key.D */) && !previousKeyboardInput.isPressed(3 /* Key.D */))
+                debug_renderDamageboxes = !debug_renderDamageboxes;
+            if (keyboardInput.isPressed(7 /* Key.H */) && !previousKeyboardInput.isPressed(7 /* Key.H */))
+                debug_renderHitboxes = !debug_renderHitboxes;
         }
-        if (endLevelCounter === GameFrame.END_LEVEL_NUM_FRAMES_TO_WAIT)
-            return LevelCompleteFrame.getFrame(globalState, sessionState, thisFrame, gameState.difficulty, frameInputHistory);
+        if (endLevelCounter === GameFrame.END_LEVEL_NUM_FRAMES_TO_WAIT) {
+            if (!sessionState.completedLevels.includes(gameState.level)) {
+                sessionState.completedLevels.push(gameState.level);
+                globalState.saveAndLoadData.saveSessionState(sessionState);
+            }
+            let finalLevel = LevelUtil.getFinalLevel();
+            if (gameState.level === finalLevel)
+                return VictoryScreenFrame.getFrame(globalState, sessionState, thisFrame);
+            else
+                return LevelCompleteFrame.getFrame(globalState, sessionState, thisFrame, gameState.level, gameState.difficulty, frameInputHistory);
+        }
         if (globalState.debugMode && keyboardInput.isPressed(27 /* Key.One */)) {
             let emptyKeyboard = EmptyKeyboard.getEmptyKeyboard();
             let emptyMouse = EmptyMouse.getEmptyMouse();
@@ -38,8 +53,17 @@ GameFrame.getFrame = function (globalState, sessionState, gameState) {
         return frame;
     };
     let getNextFrameHelper = function ({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame }) {
-        let shouldExecuteFrame = true;
         renderKonqiHitbox = keyboardInput.isPressed(43 /* Key.Shift */);
+        if (keyboardInput.isPressed(23 /* Key.X */) && endLevelCounter === null) {
+            if (savedGameState !== null) {
+                gameState = GameStateUtil.getSnapshot(savedGameState.gameStateSnapshot);
+                frameInputHistory = savedGameState.frameInputHistory;
+                previousFrameInput = FrameInputUtil.getEmptyFrameInput();
+                suggestedFrameInput = FrameInputUtil.getEmptyFrameInput();
+                return thisFrame;
+            }
+        }
+        let shouldExecuteFrame = true;
         if (keyboardInput.isPressed(43 /* Key.Shift */)) {
             skipFrameCount++;
             if (skipFrameCount === 2) {
@@ -64,6 +88,8 @@ GameFrame.getFrame = function (globalState, sessionState, gameState) {
                 frameInput.shoot = true;
             if (suggestedFrameInput.continueDialogue)
                 frameInput.continueDialogue = true;
+            if (suggestedFrameInput.debug_toggleInvulnerability)
+                frameInput.debug_toggleInvulnerability = true;
             suggestedFrameInput = FrameInputUtil.getEmptyFrameInput();
             previousFrameInput = frameInput;
             frameInputHistory = { frameInput: frameInput, index: gameState.frameCount, previousFrameInputs: frameInputHistory };
@@ -93,18 +119,12 @@ GameFrame.getFrame = function (globalState, sessionState, gameState) {
                 debug_toggleInvulnerability: suggestedFrameInput.debug_toggleInvulnerability || currentFrameInput.debug_toggleInvulnerability
             };
         }
-        if (keyboardInput.isPressed(2 /* Key.C */) && !previousKeyboardInput.isPressed(2 /* Key.C */) && gameState.playerState.isDeadFrameCount === null)
+        if (keyboardInput.isPressed(2 /* Key.C */) && gameState.playerState.isDeadFrameCount === null)
             savedGameState = { gameStateSnapshot: GameStateUtil.getSnapshot(gameState), frameInputHistory: frameInputHistory };
-        if (keyboardInput.isPressed(23 /* Key.X */) && !previousKeyboardInput.isPressed(23 /* Key.X */) && endLevelCounter === null) {
-            if (savedGameState !== null) {
-                gameState = GameStateUtil.getSnapshot(savedGameState.gameStateSnapshot);
-                frameInputHistory = savedGameState.frameInputHistory;
-            }
-        }
         return thisFrame;
     };
     let render = function (displayOutput) {
-        GameStateRendering.render(gameState, displayOutput, renderKonqiHitbox);
+        GameStateRendering.render(gameState, displayOutput, renderKonqiHitbox, debug_renderDamageboxes, debug_renderHitboxes);
         if (endLevelCounter !== null) {
             let alpha = GameFrame.getAlphaForEndLevelFadeOut(endLevelCounter);
             displayOutput.drawRectangle(0, 0, GlobalConstants.WINDOW_WIDTH, GlobalConstants.WINDOW_HEIGHT, { r: 0, g: 0, b: 0, alpha: alpha }, true);

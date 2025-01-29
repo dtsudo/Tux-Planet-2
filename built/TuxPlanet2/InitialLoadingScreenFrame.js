@@ -10,7 +10,7 @@ InitialLoadingScreenFrame.getFrame = function (globalState) {
         let musicVolume = globalState.saveAndLoadData.loadMusicVolume();
         soundOutput.setSoundVolume(soundVolume !== null ? soundVolume : 50);
         musicOutput.setMusicVolume(musicVolume !== null ? musicVolume : 50);
-        let sessionState = {};
+        let sessionState = SessionStateUtil.generateInitialSessionState();
         globalState.saveAndLoadData.loadSessionState(sessionState);
         return TitleScreenFrame.getFrame(globalState, sessionState);
     };

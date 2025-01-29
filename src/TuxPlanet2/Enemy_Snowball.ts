@@ -20,7 +20,7 @@ let Enemy_Snowball: {
 
 			let x = xMibi >> 10;
 			let y = yMibi >> 10;
-			if (x < -50 || x > GlobalConstants.WINDOW_WIDTH + 250 || y < -50 || y > GlobalConstants.WINDOW_HEIGHT + 50) {
+			if (x < -50 || x > GlobalConstants.WINDOW_WIDTH + 250 || y < -50 || y > GlobalConstants.WINDOW_HEIGHT + 250) {
 				return {
 					enemies: [],
 					nextEnemyId: nextEnemyId,
@@ -49,7 +49,7 @@ let Enemy_Snowball: {
 			let movementSpeed = 1000;
 
 			if (isFacingRight) {
-				let testX = xMibi + movementSpeed + 1024 * 8 * 3;
+				let testX = xMibi + movementSpeed + 1024 * 7 * 3;
 				let testY1 = yMibi + 1024 * 8 * 3;
 				let testY2 = yMibi - 1024 * 5 * 3;
 
@@ -59,7 +59,7 @@ let Enemy_Snowball: {
 					xMibi += movementSpeed;
 				}
 			} else {
-				let testX = xMibi - movementSpeed - 1024 * 8 * 3;
+				let testX = xMibi - movementSpeed - 1024 * 7 * 3;
 				let testY1 = yMibi + 1024 * 8 * 3;
 				let testY2 = yMibi - 1024 * 5 * 3;
 
@@ -79,6 +79,15 @@ let Enemy_Snowball: {
 					ySpeedInMibipixelsPerFrame = 8000;
 					yMibi += 1024;
 					shouldAttack = true;
+				} else {
+					break;
+				}
+			}
+
+			while (true) {
+				if (tilemap.isSolid(xMibi - 1024 * 7 * 3, yMibi + 1024 * 8 * 3) || tilemap.isSolid(xMibi + 1024 * 7 * 3, yMibi + 1024 * 8 * 3)) {
+					ySpeedInMibipixelsPerFrame = 0;
+					yMibi -= 1024;
 				} else {
 					break;
 				}

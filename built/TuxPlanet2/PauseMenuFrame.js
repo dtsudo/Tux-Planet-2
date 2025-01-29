@@ -1,10 +1,10 @@
 let PauseMenuFrame = {};
-PauseMenuFrame.getFrame = function (globalState, sessionState, underlyingFrame, difficulty) {
+PauseMenuFrame.getFrame = function (globalState, sessionState, underlyingFrame, level, difficulty) {
     let volumePicker = null;
     /*
         1 = Continue
         2 = Restart level
-        3 = Return to title screen
+        3 = Return to overworld
     */
     let option = 1;
     let getNextFrame = function ({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame }) {
@@ -32,8 +32,8 @@ PauseMenuFrame.getFrame = function (globalState, sessionState, underlyingFrame, 
             soundOutput.playSound(0 /* GameSound.Click */, 100);
             switch (option) {
                 case 1: return underlyingFrame;
-                case 2: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(0 /* Level.Level1 */, difficulty, displayProcessing));
-                case 3: return TitleScreenFrame.getFrame(globalState, sessionState);
+                case 2: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(level, difficulty, displayProcessing));
+                case 3: return OverworldFrame.getFrame(globalState, sessionState);
                 default: throw new Error("Unrecognized option");
             }
         }
@@ -47,7 +47,7 @@ PauseMenuFrame.getFrame = function (globalState, sessionState, underlyingFrame, 
         displayOutput.drawText(400, 600, "Paused", 0 /* GameFont.SimpleFont */, 48, white);
         displayOutput.drawText(365, 500, "Continue", 0 /* GameFont.SimpleFont */, 24, white);
         displayOutput.drawText(365, 400, "Restart level", 0 /* GameFont.SimpleFont */, 24, white);
-        displayOutput.drawText(365, 300, "Return to title screen", 0 /* GameFont.SimpleFont */, 24, white);
+        displayOutput.drawText(365, 300, "Quit level and return to map", 0 /* GameFont.SimpleFont */, 24, white);
         let y;
         switch (option) {
             case 1:
@@ -62,7 +62,7 @@ PauseMenuFrame.getFrame = function (globalState, sessionState, underlyingFrame, 
             default:
                 throw new Error("Unrecognized option");
         }
-        displayOutput.drawRectangle(362, y, 275, 30, white, false);
+        displayOutput.drawRectangle(362, y, 350, 30, white, false);
     };
     return {
         getNextFrame,

@@ -205,7 +205,8 @@ let Enemy_Level1Boss_Phase2: { getEnemy: ({ xMibi, yMibi, xSpeed, ySpeed, frameC
 		};
 
 		let onCollideWithPlayerBullet = function (): boolean {
-			hp--;
+			if (hp > 0)
+				hp--;
 			return true;
 		};
 

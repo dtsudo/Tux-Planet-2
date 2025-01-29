@@ -58,7 +58,7 @@ let Enemy_Level1Boss_Dead = {};
         };
         let render = function (displayOutput) {
             let spriteNum = Math.floor(frameCounter / 20) % 4;
-            displayOutput.drawImageRotatedClockwise(20 /* GameImage.OwlBrown */, 32 + spriteNum * 32, 0, 32, 32, (xMibi >> 10) - 16 * 3, (yMibi >> 10) - 16 * 3, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(28 /* GameImage.OwlBrown */, 32 + spriteNum * 32, 0, 32, 32, (xMibi >> 10) - 16 * 3, (yMibi >> 10) - 16 * 3, 0, 128 * 3);
         };
         let getSnapshot = function (thisObj) {
             return getEnemy(xMibi, yMibi, xSpeed, ySpeed, frameCounter, deadFrameCount, enemyId);

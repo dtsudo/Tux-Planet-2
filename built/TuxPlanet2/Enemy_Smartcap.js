@@ -93,7 +93,7 @@ let Enemy_Smartcap = {};
                         xVelocityOffsetInMibipixelsPerFrame: tilemap.getXVelocityForEnemiesInMibipixelsPerFrame(),
                         rotatesClockwise: rng.nextBool(),
                         displayAngleScaled: rng.nextInt(360 * 128),
-                        gameImage: 14 /* GameImage.Noone */,
+                        gameImage: 18 /* GameImage.Noone */,
                         difficulty: difficulty,
                         enemyId: nextEnemyId++
                     }));

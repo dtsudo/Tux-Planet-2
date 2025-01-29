@@ -1,12 +1,12 @@
 
-let LevelCompleteFrame: { getFrame: (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, difficulty: Difficulty, frameInputHistory: FrameInputHistory) => IFrame } = {} as any;
+let LevelCompleteFrame: { getFrame: (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, level: Level, difficulty: Difficulty, frameInputHistory: FrameInputHistory) => IFrame } = {} as any;
 
-LevelCompleteFrame.getFrame = function (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, difficulty: Difficulty, frameInputHistory: FrameInputHistory): IFrame {
+LevelCompleteFrame.getFrame = function (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, level: Level, difficulty: Difficulty, frameInputHistory: FrameInputHistory): IFrame {
 
 	/*
-		1 = Watch replay
-		2 = Restart level
-		3 = Return to title screen
+		1 = Continue
+		2 = Watch replay
+		3 = Restart level
 	*/
 	let option = 1;
 
@@ -42,9 +42,9 @@ LevelCompleteFrame.getFrame = function (globalState: GlobalState, sessionState: 
 			soundOutput.playSound(GameSound.Click, 100);
 
 			switch (option) {
-				case 1: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, difficulty, displayProcessing);
-				case 2: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(Level.Level1, difficulty, displayProcessing));
-				case 3: return TitleScreenFrame.getFrame(globalState, sessionState);
+				case 1: return OverworldFrame.getFrame(globalState, sessionState);
+				case 2: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, level, difficulty, displayProcessing);
+				case 3: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(level, difficulty, displayProcessing));
 				default: throw new Error("Unrecognized option");
 			}
 		}
@@ -56,9 +56,9 @@ LevelCompleteFrame.getFrame = function (globalState: GlobalState, sessionState: 
 		underlyingFrame.render(displayOutput);
 
 		displayOutput.drawText(
-			Math.floor(GlobalConstants.WINDOW_WIDTH / 2) - 100,
+			Math.floor(GlobalConstants.WINDOW_WIDTH / 2) - 184,
 			600,
-			"You Win!",
+			"Level Complete",
 			GameFont.SimpleFont,
 			48,
 			white);
@@ -66,21 +66,21 @@ LevelCompleteFrame.getFrame = function (globalState: GlobalState, sessionState: 
 		displayOutput.drawText(
 			365,
 			500,
-			"Watch replay",
+			"Continue",
 			GameFont.SimpleFont,
 			24,
 			white);
 		displayOutput.drawText(
 			365,
 			400,
-			"Restart level",
+			"Watch replay",
 			GameFont.SimpleFont,
 			24,
 			white);
 		displayOutput.drawText(
 			365,
 			300,
-			"Return to title screen",
+			"Restart level",
 			GameFont.SimpleFont,
 			24,
 			white);
@@ -103,7 +103,7 @@ LevelCompleteFrame.getFrame = function (globalState: GlobalState, sessionState: 
 		displayOutput.drawRectangle(
 			362,
 			y,
-			275,
+			174,
 			30,
 			white,
 			false);

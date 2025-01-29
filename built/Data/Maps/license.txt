@@ -1,6 +1,7 @@
 Level1.tmj was modified from the aurora-learn.json map (created by Kelvin Shadewing) in SuperTux Advance.
+Level2.tmj was modified from the aurora-forest.json map (created by FrostC) in SuperTux Advance.
 
-This file is licensed under AGPL 3.0.
+These files are licensed under AGPL 3.0.
 
 ------------------------------------------------------------------------------------------
 

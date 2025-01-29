@@ -6,7 +6,8 @@ let CreditsFrame_DesignAndCoding = {
             case 1 /* BuildType.WebEmbedded */:
                 text = "Design and coding by dtsudo. \n"
                     + "\n"
-                    + "Level layout was adapted from SuperTux Advance maps. \n"
+                    + "Level layout was adapted from SuperTux Advance maps; original \n"
+                    + "SuperTux Advance maps created by Kelvin Shadewing and FrostC. \n"
                     + "\n"
                     + "This game is a fangame of SuperTux and SuperTux Advance. \n"
                     + "\n"
@@ -20,7 +21,8 @@ let CreditsFrame_DesignAndCoding = {
             case 2 /* BuildType.Electron */:
                 text = "Design and coding by dtsudo. \n"
                     + "\n"
-                    + "Level layout was adapted from SuperTux Advance maps. \n"
+                    + "Level layout was adapted from SuperTux Advance maps; original \n"
+                    + "SuperTux Advance maps created by Kelvin Shadewing and FrostC. \n"
                     + "\n"
                     + "This game is a fangame of SuperTux and SuperTux Advance. \n"
                     + "\n"

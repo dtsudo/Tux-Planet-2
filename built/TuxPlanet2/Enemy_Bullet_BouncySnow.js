@@ -21,7 +21,7 @@ let Enemy_Bullet_BouncySnow = {};
                             angleScaled: i,
                             xVelocityOffsetInMibipixelsPerFrame: 0,
                             hasCollisionWithTilemap: false,
-                            gameImage: 23 /* GameImage.Iceball */,
+                            gameImage: 35 /* GameImage.Iceball */,
                             enemyId: nextEnemyId++
                         }));
                     }
@@ -81,7 +81,7 @@ let Enemy_Bullet_BouncySnow = {};
             return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, explodeYMibi, screenWipeCountdown, enemyId);
         };
         let render = function (displayOutput) {
-            displayOutput.drawImageRotatedClockwise(27 /* GameImage.BouncySnow */, 0, 0, 16, 16, (xMibi >> 10) - 8 * 3, (yMibi >> 10) - 8 * 3, displayAngleScaled, 3 * 128);
+            displayOutput.drawImageRotatedClockwise(39 /* GameImage.BouncySnow */, 0, 0, 16, 16, (xMibi >> 10) - 8 * 3, (yMibi >> 10) - 8 * 3, displayAngleScaled, 3 * 128);
         };
         let onScreenWipe = function (countdown) {
             screenWipeCountdown = countdown;

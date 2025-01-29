@@ -87,7 +87,7 @@ let Enemy_Bullet_Homing = {};
         };
         let render = function (displayOutput) {
             let spriteNum = Math.floor(frameCounter / 20) % 2;
-            displayOutput.drawImageRotatedClockwise(18 /* GameImage.Freezewave */, spriteNum * 28, 0, 28, 24, (xMibi >> 10) - 14 * 3, (yMibi >> 10) - 12 * 3, displayAngleScaled, 3 * 128);
+            displayOutput.drawImageRotatedClockwise(22 /* GameImage.Freezewave */, spriteNum * 28, 0, 28, 24, (xMibi >> 10) - 14 * 3, (yMibi >> 10) - 12 * 3, displayAngleScaled, 3 * 128);
         };
         let onScreenWipe = function (countdown) {
             screenWipeCountdown = countdown;

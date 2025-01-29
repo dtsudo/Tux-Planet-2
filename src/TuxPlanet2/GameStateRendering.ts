@@ -1,6 +1,6 @@
 
 let GameStateRendering = {
-	render: function (gameState: GameState, displayOutput: IDisplayOutput, renderKonqiHitbox: boolean): void {
+	render: function (gameState: GameState, displayOutput: IDisplayOutput, renderKonqiHitbox: boolean, debug_renderDamageboxes: boolean, debug_renderHitboxes: boolean): void {
 
 		gameState.background.render(displayOutput);
 
@@ -86,6 +86,42 @@ let GameStateRendering = {
 
 		for (let enemy of bulletEnemies) {
 			enemy.render(displayOutput);
+		}
+
+		if (debug_renderDamageboxes) {
+			for (let enemy of gameState.enemies) {
+				let damageboxes: Hitbox[] | null = enemy.getDamageboxes();
+
+				if (damageboxes !== null) {
+					for (let damagebox of damageboxes) {
+						displayOutput.drawRectangle(
+							damagebox.xMibi >> 10,
+							damagebox.yMibi >> 10,
+							damagebox.widthMibi >> 10,
+							damagebox.heightMibi >> 10,
+							{ r: 255, g: 0, b: 0, alpha: 200 },
+							true);
+					}
+				}
+			}
+		}
+
+		if (debug_renderHitboxes) {
+			for (let enemy of gameState.enemies) {
+				let hitboxes: Hitbox[] | null = enemy.getHitboxes();
+
+				if (hitboxes !== null) {
+					for (let hitbox of hitboxes) {
+						displayOutput.drawRectangle(
+							hitbox.xMibi >> 10,
+							hitbox.yMibi >> 10,
+							hitbox.widthMibi >> 10,
+							hitbox.heightMibi >> 10,
+							{ r: 255, g: 0, b: 0, alpha: 200 },
+							true);
+					}
+				}
+			}
 		}
 
 		gameState.tilemap.renderForeground(displayOutput);

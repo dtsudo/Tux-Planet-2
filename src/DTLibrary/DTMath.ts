@@ -133,10 +133,17 @@ let DTMath = ((function () {
 		throw new Error("Unreachable");
 	};
 
+	let arcTangentScaledSafe = function (x: number, y: number): number {
+		if (x === 0 && y === 0)
+			return 0;
+		return arcTangentScaled(x, y);
+	};
+
 	return {
 		normalizeDegreesScaled,
 		sineScaled,
 		cosineScaled,
-		arcTangentScaled
+		arcTangentScaled,
+		arcTangentScaledSafe
 	};
 })());

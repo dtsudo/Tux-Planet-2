@@ -1,5 +1,9 @@
 The files in this folder were created by Kelvin Shadewing (http://www.kelvinshadewing.net/) and are licensed under AGPL 3.0.
 
+tssnow.png created by:
+* UbuntuJackson (https://github.com/UbuntuJackson)
+* Kelvin Shadewing
+
 ------------------------------------------------------------------------------------------
 
                     GNU AFFERO GENERAL PUBLIC LICENSE

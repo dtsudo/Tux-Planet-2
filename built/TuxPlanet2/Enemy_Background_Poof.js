@@ -30,7 +30,7 @@ let Enemy_Background_Poof = {};
         };
         let render = function (displayOutput) {
             let spriteNum = Math.floor(frameCount / 6);
-            displayOutput.drawImageRotatedClockwise(19 /* GameImage.Poof */, spriteNum * 16, 0, 16, 16, (xMibi >> 10) - Math.floor(8 * scalingFactorScaled / 128), (yMibi >> 10) - Math.floor(8 * scalingFactorScaled / 128), 0, scalingFactorScaled);
+            displayOutput.drawImageRotatedClockwise(23 /* GameImage.Poof */, spriteNum * 16, 0, 16, 16, (xMibi >> 10) - Math.floor(8 * scalingFactorScaled / 128), (yMibi >> 10) - Math.floor(8 * scalingFactorScaled / 128), 0, scalingFactorScaled);
         };
         return {
             getSnapshot,

@@ -3,6 +3,7 @@ let CreditsFrame_Music = {
 	render: function (displayOutput: IDisplayOutput, width: number, height: number, buildType: BuildType): void {
 
 		let text = "Music track authors: \n"
+			+ "* Cal McEachern \n"
 			+ "* Juhani Junkala \n"
 			+ "* Spring Spring \n"
 			+ "* wansti \n"

@@ -1,10 +1,10 @@
 let ReplayPauseMenuFrame = {};
-ReplayPauseMenuFrame.getFrame = function (globalState, sessionState, underlyingFrame, difficulty, frameInputHistory) {
+ReplayPauseMenuFrame.getFrame = function (globalState, sessionState, underlyingFrame, level, difficulty, frameInputHistory) {
     let volumePicker = null;
     /*
         1 = Continue
         2 = Restart replay
-        3 = Return to title screen
+        3 = Return to overworld
     */
     let option = 1;
     let getNextFrame = function ({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame }) {
@@ -32,8 +32,8 @@ ReplayPauseMenuFrame.getFrame = function (globalState, sessionState, underlyingF
             soundOutput.playSound(0 /* GameSound.Click */, 100);
             switch (option) {
                 case 1: return underlyingFrame;
-                case 2: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, difficulty, displayProcessing);
-                case 3: return TitleScreenFrame.getFrame(globalState, sessionState);
+                case 2: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, level, difficulty, displayProcessing);
+                case 3: return OverworldFrame.getFrame(globalState, sessionState);
                 default: throw new Error("Unrecognized option");
             }
         }
@@ -47,7 +47,7 @@ ReplayPauseMenuFrame.getFrame = function (globalState, sessionState, underlyingF
         displayOutput.drawText(400, 600, "Paused", 0 /* GameFont.SimpleFont */, 48, white);
         displayOutput.drawText(365, 500, "Continue", 0 /* GameFont.SimpleFont */, 24, white);
         displayOutput.drawText(365, 400, "Restart replay", 0 /* GameFont.SimpleFont */, 24, white);
-        displayOutput.drawText(365, 300, "Return to title screen", 0 /* GameFont.SimpleFont */, 24, white);
+        displayOutput.drawText(365, 300, "Quit replay and return to map", 0 /* GameFont.SimpleFont */, 24, white);
         let y;
         switch (option) {
             case 1:
@@ -62,7 +62,7 @@ ReplayPauseMenuFrame.getFrame = function (globalState, sessionState, underlyingF
             default:
                 throw new Error("Unrecognized option");
         }
-        displayOutput.drawRectangle(362, y, 275, 30, white, false);
+        displayOutput.drawRectangle(362, y, 370, 30, white, false);
     };
     return {
         getNextFrame,

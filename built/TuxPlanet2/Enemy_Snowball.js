@@ -5,7 +5,7 @@ let Enemy_Snowball = {};
             let rng = DTDeterministicRandomUtil.getRandom(rngSeed);
             let x = xMibi >> 10;
             let y = yMibi >> 10;
-            if (x < -50 || x > GlobalConstants.WINDOW_WIDTH + 250 || y < -50 || y > GlobalConstants.WINDOW_HEIGHT + 50) {
+            if (x < -50 || x > GlobalConstants.WINDOW_WIDTH + 250 || y < -50 || y > GlobalConstants.WINDOW_HEIGHT + 250) {
                 return {
                     enemies: [],
                     nextEnemyId: nextEnemyId,
@@ -30,7 +30,7 @@ let Enemy_Snowball = {};
             xMibi += tilemap.getXVelocityForEnemiesInMibipixelsPerFrame();
             let movementSpeed = 1000;
             if (isFacingRight) {
-                let testX = xMibi + movementSpeed + 1024 * 8 * 3;
+                let testX = xMibi + movementSpeed + 1024 * 7 * 3;
                 let testY1 = yMibi + 1024 * 8 * 3;
                 let testY2 = yMibi - 1024 * 5 * 3;
                 if (tilemap.isSolid(testX, testY1) || tilemap.isSolid(testX, testY2)) {
@@ -41,7 +41,7 @@ let Enemy_Snowball = {};
                 }
             }
             else {
-                let testX = xMibi - movementSpeed - 1024 * 8 * 3;
+                let testX = xMibi - movementSpeed - 1024 * 7 * 3;
                 let testY1 = yMibi + 1024 * 8 * 3;
                 let testY2 = yMibi - 1024 * 5 * 3;
                 if (tilemap.isSolid(testX, testY1) || tilemap.isSolid(testX, testY2)) {
@@ -58,6 +58,15 @@ let Enemy_Snowball = {};
                     ySpeedInMibipixelsPerFrame = 8000;
                     yMibi += 1024;
                     shouldAttack = true;
+                }
+                else {
+                    break;
+                }
+            }
+            while (true) {
+                if (tilemap.isSolid(xMibi - 1024 * 7 * 3, yMibi + 1024 * 8 * 3) || tilemap.isSolid(xMibi + 1024 * 7 * 3, yMibi + 1024 * 8 * 3)) {
+                    ySpeedInMibipixelsPerFrame = 0;
+                    yMibi -= 1024;
                 }
                 else {
                     break;
@@ -89,7 +98,7 @@ let Enemy_Snowball = {};
                         angleScaled: i,
                         xVelocityOffsetInMibipixelsPerFrame: tilemap.getXVelocityForEnemiesInMibipixelsPerFrame(),
                         hasCollisionWithTilemap: true,
-                        gameImage: 23 /* GameImage.Iceball */,
+                        gameImage: 35 /* GameImage.Iceball */,
                         enemyId: nextEnemyId++
                     }));
                 }
@@ -121,7 +130,7 @@ let Enemy_Snowball = {};
         };
         let render = function (displayOutput) {
             let spriteNum = Math.floor(frameCounter / 16) % 8;
-            displayOutput.drawImageRotatedClockwise(isFacingRight ? 27 /* GameImage.BouncySnow */ : 28 /* GameImage.BouncySnow_Mirrored */, spriteNum * 16, 0, 16, 16, (xMibi >> 10) - 3 * 8, (yMibi >> 10) - 3 * 8, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(isFacingRight ? 39 /* GameImage.BouncySnow */ : 40 /* GameImage.BouncySnow_Mirrored */, spriteNum * 16, 0, 16, 16, (xMibi >> 10) - 3 * 8, (yMibi >> 10) - 3 * 8, 0, 128 * 3);
         };
         let getSnapshot = function (thisObj) {
             return getEnemy(xMibi, yMibi, isFacingRight, ySpeedInMibipixelsPerFrame, hp, frameCounter, screenWipeCountdown, enemyId);

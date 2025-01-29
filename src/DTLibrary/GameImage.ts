@@ -13,6 +13,10 @@ const enum GameImage {
 	FlyAmanita,
 	Smartcap,
 	Smartcap_Mirrored,
+	Snowfly,
+	Snowfly_Mirrored,
+	OgJumpy,
+	OgJumpy_Mirrored,
 	Ocean,
 	Noone,
 	NooneIce,
@@ -20,7 +24,15 @@ const enum GameImage {
 	Strawberry,
 	Freezewave,
 	Poof,
+	OverworldTileset_Snow,
+	OverworldTileset_PathDirt,
+	LevelIcons,
+	KonqiO,
 	OwlBrown,
+	DarkKonqi_Mirrored,
+	Flame,
+	FlameBlue,
+	FlameGreen,
 	CyraDoll,
 	DashieDoll,
 	Iceball,
@@ -33,7 +45,9 @@ const enum GameImage {
 	SignPost,
 	Igloo,
 	IceCaveTiles,
-	Treetops
+	Treetops,
+	Level1Screenshot,
+	Level2Screenshot
 }
 
 let GameImageUtil = {
@@ -52,6 +66,10 @@ let GameImageUtil = {
 			GameImage.FlyAmanita,
 			GameImage.Smartcap,
 			GameImage.Smartcap_Mirrored,
+			GameImage.Snowfly,
+			GameImage.Snowfly_Mirrored,
+			GameImage.OgJumpy,
+			GameImage.OgJumpy_Mirrored,
 			GameImage.Ocean,
 			GameImage.Noone,
 			GameImage.NooneIce,
@@ -59,7 +77,15 @@ let GameImageUtil = {
 			GameImage.Strawberry,
 			GameImage.Freezewave,
 			GameImage.Poof,
+			GameImage.OverworldTileset_Snow,
+			GameImage.OverworldTileset_PathDirt,
+			GameImage.LevelIcons,
+			GameImage.KonqiO,
 			GameImage.OwlBrown,
+			GameImage.DarkKonqi_Mirrored,
+			GameImage.Flame,
+			GameImage.FlameBlue,
+			GameImage.FlameGreen,
 			GameImage.CyraDoll,
 			GameImage.DashieDoll,
 			GameImage.Iceball,
@@ -72,7 +98,9 @@ let GameImageUtil = {
 			GameImage.SignPost,
 			GameImage.Igloo,
 			GameImage.IceCaveTiles,
-			GameImage.Treetops
+			GameImage.Treetops,
+			GameImage.Level1Screenshot,
+			GameImage.Level2Screenshot
 		];
 	},
 	
@@ -91,6 +119,10 @@ let GameImageUtil = {
 			case GameImage.FlyAmanita: return "KelvinShadewing/flyamanita.png";
 			case GameImage.Smartcap: return "KelvinShadewing/smartcap.png";
 			case GameImage.Smartcap_Mirrored: return "KelvinShadewing/smartcap_mirrored.png";
+			case GameImage.Snowfly: return "KelvinShadewing/snowfly.png";
+			case GameImage.Snowfly_Mirrored: return "KelvinShadewing/snowfly_mirrored.png";
+			case GameImage.OgJumpy: return "CrystalizedSun/og-jumpy.png";
+			case GameImage.OgJumpy_Mirrored: return "CrystalizedSun/og-jumpy_mirrored.png";
 			case GameImage.Ocean: return "KnoblePersona/ocean.png";
 			case GameImage.Noone: return "KelvinShadewing/noone.png";
 			case GameImage.NooneIce: return "KelvinShadewing/noone_ice.png";
@@ -98,7 +130,15 @@ let GameImageUtil = {
 			case GameImage.Strawberry: return "KelvinShadewing/strawberry.png";
 			case GameImage.Freezewave: return "KelvinShadewing/freezewave.png";
 			case GameImage.Poof: return "KelvinShadewing/poof.png";
+			case GameImage.OverworldTileset_Snow: return "BenCreating/Snow/Snow.png";
+			case GameImage.OverworldTileset_PathDirt: return "BenCreating/PathDirt.png";
+			case GameImage.LevelIcons: return "KelvinShadewing/level-icons.png";
+			case GameImage.KonqiO: return "KelvinShadewing/konqiO.png";
 			case GameImage.OwlBrown: return "KelvinShadewing/owl-brown.png";
+			case GameImage.DarkKonqi_Mirrored: return "KelvinShadewing/konqi_dark_mirrored.png";
+			case GameImage.Flame: return "KelvinShadewing/flame.png";
+			case GameImage.FlameBlue: return "KelvinShadewing/flameBlue.png";
+			case GameImage.FlameGreen: return "KelvinShadewing/flameGreen.png";
 			case GameImage.CyraDoll: return "KelvinShadewing/cyradoll.png";
 			case GameImage.DashieDoll: return "KelvinShadewing/dashie-doll.png";
 			case GameImage.Iceball: return "KelvinShadewing/iceball.png";
@@ -112,6 +152,8 @@ let GameImageUtil = {
 			case GameImage.Igloo: return "KelvinShadewing/igloo.png";
 			case GameImage.IceCaveTiles: return "KelvinShadewing/icecavetiles.png";
 			case GameImage.Treetops: return "Treetops/treetops.png";
+			case GameImage.Level1Screenshot: return "Screenshots/Level1Screenshot.png";
+			case GameImage.Level2Screenshot: return "Screenshots/Level2Screenshot.png";
 		}
 	}
 };

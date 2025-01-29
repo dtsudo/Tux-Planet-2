@@ -79,7 +79,7 @@ Enemy_Level1Boss_Phase1.handleCollisionWithTilemap = function ({ xMibi, yMibi, y
                         xVelocityOffsetInMibipixelsPerFrame: 0,
                         rotatesClockwise: rng.nextBool(),
                         displayAngleScaled: rng.nextInt(360 * 128),
-                        gameImage: 15 /* GameImage.NooneIce */,
+                        gameImage: 19 /* GameImage.NooneIce */,
                         difficulty: difficulty,
                         enemyId: nextEnemyId++
                     }));
@@ -126,6 +126,8 @@ Enemy_Level1Boss_Phase1.handleCollisionWithTilemap = function ({ xMibi, yMibi, y
                         xMibi: xMibi,
                         yMibi: yMibi,
                         angleScaled: attack2AngleScaled1 + delta * i,
+                        xVelocityOffsetInMibipixelsPerFrame: 0,
+                        hasCollisionWithTilemap: false,
                         enemyId: nextEnemyId++
                     }));
                 }
@@ -137,6 +139,8 @@ Enemy_Level1Boss_Phase1.handleCollisionWithTilemap = function ({ xMibi, yMibi, y
                         xMibi: xMibi,
                         yMibi: yMibi,
                         angleScaled: attack2AngleScaled2 + delta * i,
+                        xVelocityOffsetInMibipixelsPerFrame: 0,
+                        hasCollisionWithTilemap: false,
                         enemyId: nextEnemyId++
                     }));
                 }
@@ -187,13 +191,14 @@ Enemy_Level1Boss_Phase1.handleCollisionWithTilemap = function ({ xMibi, yMibi, y
         };
         let render = function (displayOutput) {
             let spriteNum = Math.floor(frameCounter / 20) % 4;
-            displayOutput.drawImageRotatedClockwise(20 /* GameImage.OwlBrown */, 32 + spriteNum * 32, 0, 32, 32, (xMibi >> 10) - 16 * 3, (yMibi >> 10) - 16 * 3, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(28 /* GameImage.OwlBrown */, 32 + spriteNum * 32, 0, 32, 32, (xMibi >> 10) - 16 * 3, (yMibi >> 10) - 16 * 3, 0, 128 * 3);
         };
         let getSnapshot = function (thisObj) {
             return getEnemy(xMibi, yMibi, xSpeed, ySpeed, frameCounter, attackCooldown1, attackCooldown2, attack2AngleScaled1, attack2AngleScaled2, transitionToPhase2Counter, hp, enemyId);
         };
         let onCollideWithPlayerBullet = function () {
-            hp--;
+            if (hp > 0)
+                hp--;
             return true;
         };
         return {

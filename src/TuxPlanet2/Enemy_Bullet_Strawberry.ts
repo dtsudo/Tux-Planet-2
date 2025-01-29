@@ -1,5 +1,5 @@
 
-let Enemy_Bullet_Strawberry: { getEnemy: ({ xMibi, yMibi, angleScaled, enemyId }: { xMibi: number, yMibi: number, angleScaled: number, enemyId: number }) => IEnemy } = {} as any;
+let Enemy_Bullet_Strawberry: { getEnemy: ({ xMibi, yMibi, angleScaled, xVelocityOffsetInMibipixelsPerFrame, hasCollisionWithTilemap, enemyId }: { xMibi: number, yMibi: number, angleScaled: number, xVelocityOffsetInMibipixelsPerFrame: number, hasCollisionWithTilemap: boolean, enemyId: number }) => IEnemy } = {} as any;
 
 ((function () {
 	let getEnemy = function (
@@ -9,11 +9,12 @@ let Enemy_Bullet_Strawberry: { getEnemy: ({ xMibi, yMibi, angleScaled, enemyId }
 		ySpeed: number,
 		displayAngleScaled: number,
 		screenWipeCountdown: number | null,
+		hasCollisionWithTilemap: boolean,
 		enemyId: number): IEnemy {
 
 		let thisEnemyArray: IEnemy[] | null = null;
 
-		let processFrame: enemyProcessFrameFunction = function ({ thisObj, enemyMapping, rngSeed, nextEnemyId, playerState, soundOutput }) {
+		let processFrame: enemyProcessFrameFunction = function ({ thisObj, tilemap, enemyMapping, rngSeed, nextEnemyId, playerState, soundOutput }) {
 
 			xMibi += xSpeed;
 			yMibi += ySpeed;
@@ -27,6 +28,15 @@ let Enemy_Bullet_Strawberry: { getEnemy: ({ xMibi, yMibi, angleScaled, enemyId }
 					nextEnemyId: nextEnemyId,
 					newRngSeed: rngSeed
 				};
+
+			if (hasCollisionWithTilemap && tilemap.isSolid(xMibi, yMibi)) {
+				let poof = Enemy_Background_Poof.getEnemy({ xMibi: xMibi, yMibi: yMibi, scalingFactorScaled: 3 * 128, enemyId: nextEnemyId++ });
+				return {
+					enemies: [poof],
+					nextEnemyId: nextEnemyId,
+					newRngSeed: rngSeed
+				};
+			}
 
 			if (screenWipeCountdown !== null) {
 				screenWipeCountdown--;
@@ -67,7 +77,7 @@ let Enemy_Bullet_Strawberry: { getEnemy: ({ xMibi, yMibi, angleScaled, enemyId }
 		};
 
 		let getSnapshot = function (thisObj: IEnemy) {
-			return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, screenWipeCountdown, enemyId);
+			return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, screenWipeCountdown, hasCollisionWithTilemap, enemyId);
 		};
 
 		let render = function (displayOutput: IDisplayOutput) {
@@ -102,15 +112,15 @@ let Enemy_Bullet_Strawberry: { getEnemy: ({ xMibi, yMibi, angleScaled, enemyId }
 		};
 	};
 
-	Enemy_Bullet_Strawberry.getEnemy = function ({ xMibi, yMibi, angleScaled, enemyId }: { xMibi: number, yMibi: number, angleScaled: number, enemyId: number }): IEnemy {
+	Enemy_Bullet_Strawberry.getEnemy = function ({ xMibi, yMibi, angleScaled, xVelocityOffsetInMibipixelsPerFrame, hasCollisionWithTilemap, enemyId }: { xMibi: number, yMibi: number, angleScaled: number, xVelocityOffsetInMibipixelsPerFrame: number, hasCollisionWithTilemap: boolean, enemyId: number }): IEnemy {
 
 		let speed = 2;
 
-		let xSpeed = speed * DTMath.cosineScaled(angleScaled);
+		let xSpeed = speed * DTMath.cosineScaled(angleScaled) + xVelocityOffsetInMibipixelsPerFrame;
 		let ySpeed = speed * DTMath.sineScaled(angleScaled);
 
 		let displayAngleScaled = -angleScaled - 90 * 128;
 
-		return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, null, enemyId);
+		return getEnemy(xMibi, yMibi, xSpeed, ySpeed, displayAngleScaled, null, hasCollisionWithTilemap, enemyId);
 	};
 })());

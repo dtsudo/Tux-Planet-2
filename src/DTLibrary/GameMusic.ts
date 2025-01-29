@@ -3,7 +3,8 @@ const enum GameMusic {
 	ChiptuneLevel1,
 	ChiptuneLevel3,
 	ForestTop,
-	MainTheme
+	MainTheme,
+	OverworldTheme
 }
 
 let GameMusicUtil = {
@@ -12,7 +13,8 @@ let GameMusicUtil = {
 			GameMusic.ChiptuneLevel1,
 			GameMusic.ChiptuneLevel3,
 			GameMusic.ForestTop,
-			GameMusic.MainTheme
+			GameMusic.MainTheme,
+			GameMusic.OverworldTheme
 		];
 	},
 
@@ -37,6 +39,11 @@ let GameMusicUtil = {
 				return {
 					filename: "wansti/theme.ogg",
 					volume: 0.10
+				};
+			case GameMusic.OverworldTheme:
+				return {
+					filename: "Trex0n/peace_at_last.ogg",
+					volume: 0.16
 				};
 		}
 	}

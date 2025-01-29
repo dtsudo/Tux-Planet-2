@@ -1,9 +1,9 @@
 
-let ReplayFrame: { getFrame: (globalState: GlobalState, sessionState: SessionState, frameInputHistory: FrameInputHistory, difficulty: Difficulty, displayProcessing: IDisplayProcessing) => IFrame } = {} as any;
+let ReplayFrame: { getFrame: (globalState: GlobalState, sessionState: SessionState, frameInputHistory: FrameInputHistory, level: Level, difficulty: Difficulty, displayProcessing: IDisplayProcessing) => IFrame } = {} as any;
 
-ReplayFrame.getFrame = function (globalState: GlobalState, sessionState: SessionState, frameInputHistory: FrameInputHistory, difficulty: Difficulty, displayProcessing: IDisplayProcessing): IFrame {
+ReplayFrame.getFrame = function (globalState: GlobalState, sessionState: SessionState, frameInputHistory: FrameInputHistory, level: Level, difficulty: Difficulty, displayProcessing: IDisplayProcessing): IFrame {
 
-	let gameState = GameStateUtil.getInitialGameState(Level.Level1, difficulty, displayProcessing);
+	let gameState = GameStateUtil.getInitialGameState(level, difficulty, displayProcessing);
 	let savedGameState: GameState | null = null;
 	let skipFrameCount = 0;
 
@@ -24,7 +24,7 @@ ReplayFrame.getFrame = function (globalState: GlobalState, sessionState: Session
 	let getNextFrame: getNextFrame = function ({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame }) {
 
 		if (keyboardInput.isPressed(Key.Esc) && !previousKeyboardInput.isPressed(Key.Esc)) 
-			return ReplayPauseMenuFrame.getFrame(globalState, sessionState, thisFrame, gameState.difficulty, frameInputHistory);
+			return ReplayPauseMenuFrame.getFrame(globalState, sessionState, thisFrame, gameState.level, gameState.difficulty, frameInputHistory);
 
 		let frame = getNextFrameHelper({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame });
 
@@ -39,16 +39,31 @@ ReplayFrame.getFrame = function (globalState: GlobalState, sessionState: Session
 			}
 		}
 
+		if (globalState.debugMode && keyboardInput.isPressed(Key.One)) {
+			let emptyKeyboard = EmptyKeyboard.getEmptyKeyboard();
+			let emptyMouse = EmptyMouse.getEmptyMouse();
+			for (let i = 0; i < 80; i++) {
+				frame = getNextFrameHelper({ keyboardInput: emptyKeyboard, mouseInput: emptyMouse, previousKeyboardInput: emptyKeyboard, previousMouseInput: emptyMouse, displayProcessing, soundOutput, musicOutput, thisFrame });
+			}
+		}
+
 		if (endLevelCounter !== null)
 			endLevelCounter++;
 
 		if (endLevelCounter === GameFrame.END_LEVEL_NUM_FRAMES_TO_WAIT)
-			return LevelCompleteFrame.getFrame(globalState, sessionState, thisFrame, gameState.difficulty, frameInputHistory);
+			return LevelCompleteFrame.getFrame(globalState, sessionState, thisFrame, gameState.level, gameState.difficulty, frameInputHistory);
 
 		return frame;
 	};
 
 	let getNextFrameHelper: getNextFrame = function ({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame }) {
+
+		if (keyboardInput.isPressed(Key.X) && endLevelCounter === null) {
+			if (savedGameState !== null) {
+				gameState = GameStateUtil.getSnapshot(savedGameState);
+				return thisFrame;
+			}
+		}
 
 		let shouldExecuteFrame = true;
 
@@ -81,19 +96,16 @@ ReplayFrame.getFrame = function (globalState: GlobalState, sessionState: Session
 				endLevelCounter = 0;
 		}
 
-		if (keyboardInput.isPressed(Key.C) && !previousKeyboardInput.isPressed(Key.C) && gameState.playerState.isDeadFrameCount === null)
+		if (keyboardInput.isPressed(Key.C) && gameState.playerState.isDeadFrameCount === null)
 			savedGameState = GameStateUtil.getSnapshot(gameState);
-
-		if (keyboardInput.isPressed(Key.X) && !previousKeyboardInput.isPressed(Key.X) && endLevelCounter === null) {
-			if (savedGameState !== null)
-				gameState = GameStateUtil.getSnapshot(savedGameState);
-		}
 
 		return thisFrame;
 	};
 
 	let render = function (displayOutput: IDisplayOutput) {
-		GameStateRendering.render(gameState, displayOutput, false);
+		let debug_renderDamageboxes = false;
+		let debug_renderHitboxes = false;
+		GameStateRendering.render(gameState, displayOutput, false, debug_renderDamageboxes, debug_renderHitboxes);
 
 		if (endLevelCounter !== null) {
 			let alpha = GameFrame.getAlphaForEndLevelFadeOut(endLevelCounter);

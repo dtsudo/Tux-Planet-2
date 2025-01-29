@@ -59,7 +59,7 @@ let Enemy_Bullet_Freezewave = {};
         };
         let render = function (displayOutput) {
             let spriteNum = Math.floor(frameCounter / 20) % 2;
-            displayOutput.drawImageRotatedClockwise(18 /* GameImage.Freezewave */, spriteNum * 28, 0, 28, 24, (xMibi >> 10) - ((14 * scalingFactorScaled) >> 7), (yMibi >> 10) - ((12 * scalingFactorScaled) >> 7), displayAngleScaled, scalingFactorScaled);
+            displayOutput.drawImageRotatedClockwise(22 /* GameImage.Freezewave */, spriteNum * 28, 0, 28, 24, (xMibi >> 10) - ((14 * scalingFactorScaled) >> 7), (yMibi >> 10) - ((12 * scalingFactorScaled) >> 7), displayAngleScaled, scalingFactorScaled);
         };
         let onScreenWipe = function (countdown) {
             screenWipeCountdown = countdown;

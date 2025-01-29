@@ -1,14 +1,14 @@
 
-let ReplayPauseMenuFrame: { getFrame: (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, difficulty: Difficulty, frameInputHistory: FrameInputHistory) => IFrame } = {} as any;
+let ReplayPauseMenuFrame: { getFrame: (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, level: Level, difficulty: Difficulty, frameInputHistory: FrameInputHistory) => IFrame } = {} as any;
 
-ReplayPauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, difficulty: Difficulty, frameInputHistory: FrameInputHistory): IFrame {
+ReplayPauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState: SessionState, underlyingFrame: IFrame, level: Level, difficulty: Difficulty, frameInputHistory: FrameInputHistory): IFrame {
 
 	let volumePicker: SoundAndMusicVolumePicker | null = null;
 
 	/*
 		1 = Continue
 		2 = Restart replay
-		3 = Return to title screen
+		3 = Return to overworld
 	*/
 	let option: number = 1;
 
@@ -50,8 +50,8 @@ ReplayPauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState
 
 			switch (option) {
 				case 1: return underlyingFrame;
-				case 2: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, difficulty, displayProcessing);
-				case 3: return TitleScreenFrame.getFrame(globalState, sessionState);
+				case 2: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, level, difficulty, displayProcessing);
+				case 3: return OverworldFrame.getFrame(globalState, sessionState);
 				default: throw new Error("Unrecognized option");
 			}
 		}
@@ -92,7 +92,7 @@ ReplayPauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState
 		displayOutput.drawText(
 			365,
 			300,
-			"Return to title screen",
+			"Quit replay and return to map",
 			GameFont.SimpleFont,
 			24,
 			white);
@@ -115,7 +115,7 @@ ReplayPauseMenuFrame.getFrame = function (globalState: GlobalState, sessionState
 		displayOutput.drawRectangle(
 			362,
 			y,
-			275,
+			370,
 			30,
 			white,
 			false);

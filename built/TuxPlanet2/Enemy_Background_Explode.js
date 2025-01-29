@@ -26,7 +26,7 @@ let Enemy_Background_Explode = {};
         };
         let render = function (displayOutput) {
             let spriteNum = Math.floor(frameCount / 6);
-            displayOutput.drawImageRotatedClockwise(16 /* GameImage.ExplodeF */, spriteNum * 24, 0, 24, 24, (xMibi >> 10) - Math.floor(12 * scalingFactorScaled / 128), (yMibi >> 10) - Math.floor(12 * scalingFactorScaled / 128), displayAngleScaled, scalingFactorScaled);
+            displayOutput.drawImageRotatedClockwise(20 /* GameImage.ExplodeF */, spriteNum * 24, 0, 24, 24, (xMibi >> 10) - Math.floor(12 * scalingFactorScaled / 128), (yMibi >> 10) - Math.floor(12 * scalingFactorScaled / 128), displayAngleScaled, scalingFactorScaled);
         };
         return {
             getSnapshot,

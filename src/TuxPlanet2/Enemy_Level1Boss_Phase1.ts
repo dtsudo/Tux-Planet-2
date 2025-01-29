@@ -171,6 +171,8 @@ Enemy_Level1Boss_Phase1.handleCollisionWithTilemap = function ({ xMibi, yMibi, y
 						xMibi: xMibi,
 						yMibi: yMibi,
 						angleScaled: attack2AngleScaled1 + delta * i,
+						xVelocityOffsetInMibipixelsPerFrame: 0,
+						hasCollisionWithTilemap: false,
 						enemyId: nextEnemyId++
 					}));
 				}
@@ -184,6 +186,8 @@ Enemy_Level1Boss_Phase1.handleCollisionWithTilemap = function ({ xMibi, yMibi, y
 						xMibi: xMibi,
 						yMibi: yMibi,
 						angleScaled: attack2AngleScaled2 + delta * i,
+						xVelocityOffsetInMibipixelsPerFrame: 0,
+						hasCollisionWithTilemap: false,
 						enemyId: nextEnemyId++
 					}));
 				}
@@ -262,7 +266,8 @@ Enemy_Level1Boss_Phase1.handleCollisionWithTilemap = function ({ xMibi, yMibi, y
 		};
 
 		let onCollideWithPlayerBullet = function (): boolean {
-			hp--;
+			if (hp > 0)
+				hp--;
 			return true;
 		};
 

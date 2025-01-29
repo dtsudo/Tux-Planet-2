@@ -4,7 +4,8 @@ let GameMusicUtil = {
             0 /* GameMusic.ChiptuneLevel1 */,
             1 /* GameMusic.ChiptuneLevel3 */,
             2 /* GameMusic.ForestTop */,
-            3 /* GameMusic.MainTheme */
+            3 /* GameMusic.MainTheme */,
+            4 /* GameMusic.OverworldTheme */
         ];
     },
     getMusicInfo: function (music) {
@@ -28,6 +29,11 @@ let GameMusicUtil = {
                 return {
                     filename: "wansti/theme.ogg",
                     volume: 0.10
+                };
+            case 4 /* GameMusic.OverworldTheme */:
+                return {
+                    filename: "Trex0n/peace_at_last.ogg",
+                    volume: 0.16
                 };
         }
     }

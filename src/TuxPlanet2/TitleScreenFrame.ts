@@ -20,6 +20,21 @@ TitleScreenFrame.getFrame = function (globalState: GlobalState, sessionState: Se
 		fontSize: 20
 	});
 
+	let resetDataButton: Button = ButtonUtil.getButton({
+		x: 160,
+		y: 10,
+		width: 150,
+		height: 31,
+		backgroundColor: ButtonUtil.STANDARD_SECONDARY_BACKGROUND_COLOR,
+		hoverColor: ButtonUtil.STANDARD_HOVER_COLOR,
+		clickColor: ButtonUtil.STANDARD_CLICK_COLOR,
+		text: "Reset data",
+		textXOffset: 20,
+		textYOffset: 7,
+		font: GameFont.SimpleFont,
+		fontSize: 20
+	});
+
 	let getNextFrame: getNextFrame = function ({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame }) {
 
 		if (globalState.debugMode) {
@@ -45,8 +60,12 @@ TitleScreenFrame.getFrame = function (globalState: GlobalState, sessionState: Se
 		if (keyboardInput.isPressed(Key.Enter) && !previousKeyboardInput.isPressed(Key.Enter)
 				|| keyboardInput.isPressed(Key.Space) && !previousKeyboardInput.isPressed(Key.Space)
 				|| keyboardInput.isPressed(Key.Z) && !previousKeyboardInput.isPressed(Key.Z)) {
+
 			soundOutput.playSound(GameSound.Click, 100);
-			return ChooseDifficultyFrame.getFrame(globalState, sessionState);
+
+			sessionState.hasStarted = true;
+			globalState.saveAndLoadData.saveSessionState(sessionState);
+			return OverworldFrame.getFrame(globalState, sessionState);
 		}
 
 		let clickedCreditsButton: boolean = creditsButton.processFrame(mouseInput).wasClicked;
@@ -54,6 +73,15 @@ TitleScreenFrame.getFrame = function (globalState: GlobalState, sessionState: Se
 		if (clickedCreditsButton) {
 			soundOutput.playSound(GameSound.Click, 100);
 			return CreditsFrame.getFrame(globalState, sessionState);
+		}
+
+		if (sessionState.hasStarted) {
+			let clickedResetDataButton: boolean = resetDataButton.processFrame(mouseInput).wasClicked;
+
+			if (clickedResetDataButton) {
+				soundOutput.playSound(GameSound.Click, 100);
+				return ResetDataConfirmationFrame.getFrame(globalState, sessionState, thisFrame);
+			}
 		}
 
 		return thisFrame;
@@ -70,13 +98,23 @@ TitleScreenFrame.getFrame = function (globalState: GlobalState, sessionState: Se
 			48,
 			black);
 
-		displayOutput.drawText(
-			Math.floor(GlobalConstants.WINDOW_WIDTH / 2) - 129,
-			350,
-			"Start (press enter)",
-			GameFont.SimpleFont,
-			28,
-			black);
+		if (sessionState.hasStarted) {
+			displayOutput.drawText(
+				Math.floor(GlobalConstants.WINDOW_WIDTH / 2) - 158,
+				350,
+				"Continue (press enter)",
+				GameFont.SimpleFont,
+				28,
+				black);
+		} else {
+			displayOutput.drawText(
+				Math.floor(GlobalConstants.WINDOW_WIDTH / 2) - 129,
+				350,
+				"Start (press enter)",
+				GameFont.SimpleFont,
+				28,
+				black);
+		}
 
 		let versionInfo = VersionInfo.getCurrentVersion();
 		let versionString = "v" + versionInfo.version;
@@ -93,6 +131,9 @@ TitleScreenFrame.getFrame = function (globalState: GlobalState, sessionState: Se
 
 		if (volumePicker !== null)
 			volumePicker.render(displayOutput);
+
+		if (sessionState.hasStarted)
+			resetDataButton.render(displayOutput);
 	};
 
 	return {

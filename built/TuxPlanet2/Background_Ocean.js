@@ -28,8 +28,8 @@ let Background_Ocean = {};
             bossFrameCounter = 0;
         };
         let render = function (displayOutput) {
-            displayOutput.drawImageRotatedClockwise(13 /* GameImage.Ocean */, 0, 0, 480, 240, xOffsetMibi >> 10, 0, 0, 128 * 3);
-            displayOutput.drawImageRotatedClockwise(13 /* GameImage.Ocean */, 0, 0, 480, 240, (xOffsetMibi >> 10) + 480 * 3, 0, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(17 /* GameImage.Ocean */, 0, 0, 480, 240, xOffsetMibi >> 10, 0, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(17 /* GameImage.Ocean */, 0, 0, 480, 240, (xOffsetMibi >> 10) + 480 * 3, 0, 0, 128 * 3);
             if (bossFrameCounter !== null) {
                 let alpha = Math.floor(bossFrameCounter * 5 / 2);
                 if (alpha > 200)

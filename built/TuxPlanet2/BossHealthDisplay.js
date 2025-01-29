@@ -55,15 +55,15 @@ let BossHealthDisplayUtil = {};
         let render = function (displayOutput) {
             if (currentHealthPercent === null)
                 return;
-            displayOutput.drawImageRotatedClockwise(25 /* GameImage.BossHealth */, 50, 0, 10, 8, GlobalConstants.WINDOW_WIDTH - 60, 500, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(37 /* GameImage.BossHealth */, 50, 0, 10, 8, GlobalConstants.WINDOW_WIDTH - 60, 500, 0, 128 * 3);
             for (let i = 0; i < 10; i++)
-                displayOutput.drawImageRotatedClockwise(25 /* GameImage.BossHealth */, 0, 0, 10, 8, GlobalConstants.WINDOW_WIDTH - 60, 500 - 24 - 24 * i, 0, 128 * 3);
+                displayOutput.drawImageRotatedClockwise(37 /* GameImage.BossHealth */, 0, 0, 10, 8, GlobalConstants.WINDOW_WIDTH - 60, 500 - 24 - 24 * i, 0, 128 * 3);
             let numPixelsOfHealth = Math.floor(currentHealthPercent * 80 / 100);
             for (let i = 0; i < numPixelsOfHealth; i++) {
-                displayOutput.drawImageRotatedClockwise(25 /* GameImage.BossHealth */, 40, 0, 10, 1, GlobalConstants.WINDOW_WIDTH - 60, 260 + i * 3, 0, 128 * 3);
+                displayOutput.drawImageRotatedClockwise(37 /* GameImage.BossHealth */, 40, 0, 10, 1, GlobalConstants.WINDOW_WIDTH - 60, 260 + i * 3, 0, 128 * 3);
             }
-            displayOutput.drawImageRotatedClockwise(25 /* GameImage.BossHealth */, 60, 0, 10, 8, GlobalConstants.WINDOW_WIDTH - 60, 260 - 24, 0, 128 * 3);
-            displayOutput.drawImageRotatedClockwise(24 /* GameImage.Skull */, 0, 0, 16, 16, GlobalConstants.WINDOW_WIDTH - 60 - 9, 260 - 48, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(37 /* GameImage.BossHealth */, 60, 0, 10, 8, GlobalConstants.WINDOW_WIDTH - 60, 260 - 24, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(36 /* GameImage.Skull */, 0, 0, 16, 16, GlobalConstants.WINDOW_WIDTH - 60 - 9, 260 - 48, 0, 128 * 3);
         };
         return {
             getSnapshot,

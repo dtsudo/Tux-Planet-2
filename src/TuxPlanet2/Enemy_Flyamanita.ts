@@ -59,7 +59,7 @@ let Enemy_Flyamanita: {
 			if (yAngleScaled >= 360 * 128)
 				yAngleScaled -= 360 * 128;
 
-			yMibi = yInitialMibi + Math.floor(90 * DTMath.sineScaled(yAngleScaled));
+			yMibi = yInitialMibi + 90 * DTMath.sineScaled(yAngleScaled);
 
 			let enemies = [thisObj];
 
@@ -176,7 +176,7 @@ let Enemy_Flyamanita: {
 			case Difficulty.Hard: hp = 50; break;
 		}
 
-		let yMibi = yInitialMibi + Math.floor(100 * DTMath.sineScaled(yAngleScaled));
+		let yMibi = yInitialMibi + 90 * DTMath.sineScaled(yAngleScaled);
 
 		return getEnemy(xMibi, yMibi, yInitialMibi, yAngleScaled, hp, null, 0, null, enemyId);
 	};

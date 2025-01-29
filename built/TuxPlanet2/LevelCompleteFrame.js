@@ -1,9 +1,9 @@
 let LevelCompleteFrame = {};
-LevelCompleteFrame.getFrame = function (globalState, sessionState, underlyingFrame, difficulty, frameInputHistory) {
+LevelCompleteFrame.getFrame = function (globalState, sessionState, underlyingFrame, level, difficulty, frameInputHistory) {
     /*
-        1 = Watch replay
-        2 = Restart level
-        3 = Return to title screen
+        1 = Continue
+        2 = Watch replay
+        3 = Restart level
     */
     let option = 1;
     let getNextFrame = function ({ keyboardInput, mouseInput, previousKeyboardInput, previousMouseInput, displayProcessing, soundOutput, musicOutput, thisFrame }) {
@@ -32,9 +32,9 @@ LevelCompleteFrame.getFrame = function (globalState, sessionState, underlyingFra
             || keyboardInput.isPressed(25 /* Key.Z */) && !previousKeyboardInput.isPressed(25 /* Key.Z */)) {
             soundOutput.playSound(0 /* GameSound.Click */, 100);
             switch (option) {
-                case 1: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, difficulty, displayProcessing);
-                case 2: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(0 /* Level.Level1 */, difficulty, displayProcessing));
-                case 3: return TitleScreenFrame.getFrame(globalState, sessionState);
+                case 1: return OverworldFrame.getFrame(globalState, sessionState);
+                case 2: return ReplayFrame.getFrame(globalState, sessionState, frameInputHistory, level, difficulty, displayProcessing);
+                case 3: return GameFrame.getFrame(globalState, sessionState, GameStateUtil.getInitialGameState(level, difficulty, displayProcessing));
                 default: throw new Error("Unrecognized option");
             }
         }
@@ -42,10 +42,10 @@ LevelCompleteFrame.getFrame = function (globalState, sessionState, underlyingFra
     };
     let render = function (displayOutput) {
         underlyingFrame.render(displayOutput);
-        displayOutput.drawText(Math.floor(GlobalConstants.WINDOW_WIDTH / 2) - 100, 600, "You Win!", 0 /* GameFont.SimpleFont */, 48, white);
-        displayOutput.drawText(365, 500, "Watch replay", 0 /* GameFont.SimpleFont */, 24, white);
-        displayOutput.drawText(365, 400, "Restart level", 0 /* GameFont.SimpleFont */, 24, white);
-        displayOutput.drawText(365, 300, "Return to title screen", 0 /* GameFont.SimpleFont */, 24, white);
+        displayOutput.drawText(Math.floor(GlobalConstants.WINDOW_WIDTH / 2) - 184, 600, "Level Complete", 0 /* GameFont.SimpleFont */, 48, white);
+        displayOutput.drawText(365, 500, "Continue", 0 /* GameFont.SimpleFont */, 24, white);
+        displayOutput.drawText(365, 400, "Watch replay", 0 /* GameFont.SimpleFont */, 24, white);
+        displayOutput.drawText(365, 300, "Restart level", 0 /* GameFont.SimpleFont */, 24, white);
         let y;
         switch (option) {
             case 1:
@@ -60,7 +60,7 @@ LevelCompleteFrame.getFrame = function (globalState, sessionState, underlyingFra
             default:
                 throw new Error("Unrecognized option");
         }
-        displayOutput.drawRectangle(362, y, 275, 30, white, false);
+        displayOutput.drawRectangle(362, y, 174, 30, white, false);
     };
     return {
         getNextFrame,

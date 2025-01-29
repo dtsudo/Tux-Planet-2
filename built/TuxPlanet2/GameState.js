@@ -46,6 +46,11 @@ let GameStateUtil = {
                 background = Background_Ocean.getBackground();
                 tilemap = TilemapUtil.getTilemap(MapData.Level1, TilemapLevelInfo_Level1.getLevel1TilemapLevelInfo(), displayProcessing);
                 break;
+            case 1 /* Level.Level2 */:
+                enemy = Enemy_Level2.getEnemy({ enemyId: nextEnemyId++ });
+                background = Background_Ocean.getBackground();
+                tilemap = TilemapUtil.getTilemap(MapData.Level2, TilemapLevelInfo_Level2.getLevel2TilemapLevelInfo(), displayProcessing);
+                break;
         }
         return {
             playerState: {

@@ -64,7 +64,7 @@ let Enemy_Level1Boss_Phase2 = {};
                         angleScaled: i,
                         xVelocityOffsetInMibipixelsPerFrame: 0,
                         hasCollisionWithTilemap: false,
-                        gameImage: 23 /* GameImage.Iceball */,
+                        gameImage: 35 /* GameImage.Iceball */,
                         enemyId: nextEnemyId++
                     }));
                 }
@@ -158,13 +158,14 @@ let Enemy_Level1Boss_Phase2 = {};
         };
         let render = function (displayOutput) {
             let spriteNum = Math.floor(frameCounter / 20) % 4;
-            displayOutput.drawImageRotatedClockwise(20 /* GameImage.OwlBrown */, 32 + spriteNum * 32, 0, 32, 32, (xMibi >> 10) - 16 * 3, (yMibi >> 10) - 16 * 3, 0, 128 * 3);
+            displayOutput.drawImageRotatedClockwise(28 /* GameImage.OwlBrown */, 32 + spriteNum * 32, 0, 32, 32, (xMibi >> 10) - 16 * 3, (yMibi >> 10) - 16 * 3, 0, 128 * 3);
         };
         let getSnapshot = function (thisObj) {
             return getEnemy(xMibi, yMibi, xSpeed, ySpeed, frameCounter, attackCooldown1, attackCooldown2, hp, transitionToPhase3Counter, enemyId);
         };
         let onCollideWithPlayerBullet = function () {
-            hp--;
+            if (hp > 0)
+                hp--;
             return true;
         };
         return {

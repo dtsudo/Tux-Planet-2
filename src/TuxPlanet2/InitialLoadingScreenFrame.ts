@@ -17,7 +17,7 @@ InitialLoadingScreenFrame.getFrame = function (globalState: GlobalState): IFrame
 		soundOutput.setSoundVolume(soundVolume !== null ? soundVolume : 50);
 		musicOutput.setMusicVolume(musicVolume !== null ? musicVolume : 50);
 
-		let sessionState = {};
+		let sessionState = SessionStateUtil.generateInitialSessionState();
 		globalState.saveAndLoadData.loadSessionState(sessionState);
 
 		return TitleScreenFrame.getFrame(globalState, sessionState);
